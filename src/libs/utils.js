@@ -15,9 +15,7 @@ var Analyzes = {
 				API.loadVK("execute",
 					{
 						code: (
-							peerId > 0
-								? "var o=%o;return{u:API.users.get({user_ids:o,fields:\"photo_100,online,first_name_ins,last_name_ins\",v:5.2})[0],m:API.messages.getHistory({user_id:o,v:5.2}).count};"
-								: "var o=%o;return{c:API.messages.getChat({chat_id:o,v:5.2}),m:API.messages.getHistory({chat_id:o}).count};"
+							"var o=%o;return{u:API.users.get({user_ids:o,fields:\"photo_100,online,first_name_ins,last_name_ins\",v:5.2})[0],m:API.messages.getHistory({user_id:o,v:5.2}).count};"
 						).replace(/%o/i, Math.abs(peerId))
 					},
 					function (result) {

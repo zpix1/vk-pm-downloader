@@ -1,30 +1,26 @@
 <template>
-  <div id="app">
-    <div class="header">PM Downloader</div>
-    <div class="wrapper">
+  <v-app id="app">
+    <main>
+      <div class="header">PM Downloader</div>
       <Main/>
-    </div>
-  </div>
+    </main>
+  </v-app>
 </template>
 
 <script>
-import Main from './components/Main.vue'
+import Main from "./components/Main.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     Main
   }
-}
+};
 </script>
 
 <style>
 .header {
   text-align: center;
   font-size: 30px;
-}
-.wrapper {
-  text-align: center;
-  padding: 20px;
 }
 </style>

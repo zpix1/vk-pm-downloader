@@ -1,16 +1,24 @@
 <template>
-  <div>
+  <div class="text-xs-center wrapper">
     Ваш токен:
     <input v-bind:value="token">
     <div>Ваше имя: {{ name }}</div>
-    <button @click="save">Downloadtest</button>
     <v-container fluid grid-list-xl>
       <v-layout row wrap>
         <v-flex md8 xs12>
           <ChatList v-bind:chats="chats"/>
         </v-flex>
         <v-flex md4 xs12>
-          <v-card>Скачать</v-card>
+          <v-card>
+            <v-subheader>Скачать</v-subheader>
+            <div>{{ currentDialog }}</div>
+            <v-btn
+              v-if="countSelected > 0 && !downloading"
+              color="success"
+              @click="downloadSelected"
+            >Скачать {{ countSelected }}</v-btn>
+            <v-btn v-else color="info" disabled>Скачать {{ countSelected }}</v-btn>
+          </v-card>
         </v-flex>
       </v-layout>
     </v-container>
@@ -19,6 +27,7 @@
 
 <script>
 import { saveAs } from "file-saver";
+import JSZip  from "jszip";
 import API from "../libs/api";
 import Analyzes from "../libs/utils";
 
@@ -30,11 +39,13 @@ export default {
     return {
       token: null,
       name: null,
+      currentDialog: null,
+      downloading: false,
       chats: []
     };
   },
   created: function() {
-    this.token = localStorage.getItem('pm_token');
+    this.token = localStorage.getItem("pm_token");
     API.token = this.token;
     API.loadVK("users.get", {}, d => {
       this.name = `${d[0].first_name} ${d[0].last_name}`;
@@ -70,11 +81,48 @@ export default {
     );
   },
   methods: {
-    save: function() {
-      saveAs(
-        new Blob(["Hello, world!"], { type: "text/plain;charset=utf-8" }),
-        "321.txt"
-      );
+    reportProgress: function(status, current, max) {
+      this.currentDialog = `${status} ${current}/${max}`;
+    },
+    downloadSelected: function() {
+      this.downloading = true;
+      var zip = new JSZip();
+
+      var selectedChats = this.chats.filter(c => c.selected);
+      var len = selectedChats.length;
+      var i = 0;
+      var callback = obj => {
+        zip.file(obj.filename, obj.data);
+        setTimeout(() => {
+          i++;
+          if (i < len) {
+            let peerID = selectedChats[i].peer_id;
+            if (peerID > 0) {
+              console.log(peerID + ": analyze...");
+              this.reportProgress("Загрузка", i+1, len);
+              Analyzes.dialog(peerID, callback);
+            }
+          } else {
+            console.log("DONE");
+            zip.generateAsync({ type: "blob" }).then(content => {
+              saveAs(content, "result.zip");
+            });
+            this.downloading = false;
+            this.reportProgress("Готово", len, len);
+          }
+        }, 1000);
+      };
+      this.reportProgress("Загрузка", i+1, len);
+      Analyzes.dialog(selectedChats[i].peer_id, callback);
+    }
+  },
+  computed: {
+    countSelected: function() {
+      var ans = 0;
+      for (var i = 0; i < this.chats.length; i++) {
+        if (this.chats[i].selected) ans++;
+      }
+      return ans;
     }
   },
   components: { ChatList }
@@ -83,7 +131,8 @@ export default {
 
 <style>
 .wrapper {
-  max-width: 1000px;
   margin: auto;
+  text-align: center;
+  max-width: 1000px;
 }
 </style>
