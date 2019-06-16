@@ -11,13 +11,26 @@
         <v-flex md4 xs12>
           <v-card>
             <v-subheader>Скачать</v-subheader>
-            <div>{{ currentDialog }}</div>
-            <v-btn
-              v-if="countSelected > 0 && !downloading"
-              color="success"
-              @click="downloadSelected"
-            >Скачать {{ countSelected }}</v-btn>
-            <v-btn v-else color="info" disabled>Скачать {{ countSelected }}</v-btn>
+            <div> {{ currentDialogLabel }} </div>
+            <v-progress-linear v-model="currentDialogProgress"></v-progress-linear>
+            <v-progress-linear hidden v-model="currentDialogPart"></v-progress-linear>
+            <v-card-text style="padding-top: 0px;">
+              <v-select
+                v-model="fileType"
+                persistent-hint
+                :hint="fileType === 'JSON' ? 'для последующей обработки' : 'для непосредственного просмотра'"
+                :items="['JSON', 'HTML']"
+                label="Тип файлов"
+              ></v-select>
+              <br>
+
+              <v-btn
+                v-if="countSelected > 0 && !downloading"
+                color="success"
+                @click="downloadSelected"
+              >Скачать {{ countSelected }}</v-btn>
+              <v-btn v-else color="info" disabled>Скачать {{ countSelected }}</v-btn>
+            </v-card-text>
           </v-card>
         </v-flex>
       </v-layout>
@@ -27,7 +40,7 @@
 
 <script>
 import { saveAs } from "file-saver";
-import JSZip  from "jszip";
+import JSZip from "jszip";
 import API from "../libs/api";
 import Analyzes from "../libs/utils";
 
@@ -39,8 +52,11 @@ export default {
     return {
       token: null,
       name: null,
-      currentDialog: null,
+      currentDialogProgress: 0,
+      currentDialogLabel: "",
+      currentDialogPart: 0,
       downloading: false,
+      fileType: "JSON",
       chats: []
     };
   },
@@ -76,13 +92,17 @@ export default {
           }
         }
         this.chats = ans;
-        console.log(this.chats);
       }
     );
   },
   methods: {
     reportProgress: function(status, current, max) {
-      this.currentDialog = `${status} ${current}/${max}`;
+      this.currentDialogProgress = Math.ceil(current/max*100);
+      this.currentDialogLabel = `${status} ${current}/${max}`;
+    },
+    reportDialogProgress: function(status, current, max) {
+      console.log(current, max);
+      this.currentDialogPart = Math.ceil(current/max*100);
     },
     downloadSelected: function() {
       this.downloading = true;
@@ -98,12 +118,12 @@ export default {
           if (i < len) {
             let peerID = selectedChats[i].peer_id;
             if (peerID > 0) {
-              console.log(peerID + ": analyze...");
-              this.reportProgress("Загрузка", i+1, len);
-              Analyzes.dialog(peerID, callback);
+              // console.log(peerID + ": analyze...");
+              this.reportProgress(`Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`, i + 1, len);
+              Analyzes.dialog(peerID, callback, this.reportDialogProgress);
             }
           } else {
-            console.log("DONE");
+            // console.log("DONE");
             zip.generateAsync({ type: "blob" }).then(content => {
               saveAs(content, "result.zip");
             });
@@ -112,8 +132,8 @@ export default {
           }
         }, 1000);
       };
-      this.reportProgress("Загрузка", i+1, len);
-      Analyzes.dialog(selectedChats[i].peer_id, callback);
+      this.reportProgress(`Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`, i + 1, len);
+      Analyzes.dialog(selectedChats[i].peer_id, callback, this.reportDialogProgress);
     }
   },
   computed: {

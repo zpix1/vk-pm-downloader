@@ -3,7 +3,7 @@
     <v-flex>
       <v-card>
         <v-list subheader>
-          <v-subheader>Чаты</v-subheader>
+          <v-subheader>Выбрать чаты</v-subheader>
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>Выбрать все</v-list-tile-title>

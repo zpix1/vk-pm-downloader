@@ -1,14 +1,12 @@
 import API from "./api";
 var Analyzes = {
-	dialog: function (peerId, callback) {
+	dialog: function (peerId, callback, statusFunction) {
 		var tsStatus,
 			pbStatus,
 
 			isStoppedByUser = false,
 
-			setStatus = function (text, current, max) {
-				
-			},
+			setStatus = statusFunction,
 
 			init = function () {
 				setStatus("Инициализация", 0, 1);
