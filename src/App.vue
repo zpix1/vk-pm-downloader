@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">PM Downloader v1.0</div>
+      <div class="header">VK PM Downloader v1.0</div>
       <Main/>
     </main>
   </v-app>
@@ -20,6 +20,7 @@ export default {
 
 <style>
 .header {
+  margin-top: 10px;
   text-align: center;
   font-size: 30px;
 }

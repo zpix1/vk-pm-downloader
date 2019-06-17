@@ -1,5 +1,19 @@
 <template>
   <div class="text-xs-center wrapper">
+    <div>
+      <v-dialog v-model="dialog" width="700">
+        <v-card>
+          <v-card-title class="headline" primary-title>Вход по паролю</v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-text-field v-model="login" label="Логин"></v-text-field>
+              <v-text-field v-model="password" type="password" label="Пароль"></v-text-field>
+              <v-btn color="success" @click="passwordLogin">Войти</v-btn>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </div>
     <v-container fluid grid-list-xl style="padding-top: 0;">
       <v-layout row wrap>
         <v-flex md12 xs12>
@@ -9,13 +23,16 @@
               <v-layout row>
                 <v-flex xs9>
                   <v-form class="text-xs-left">
-                    <v-text-field
-                      v-model="token"
-                      @change="tokenUpdated"
-                      label="Токен"
-                      required
-                      style="max-width: 300px;"
-                    ></v-text-field>
+                    <div>
+                      <v-text-field
+                        v-model="token"
+                        @change="tokenUpdated"
+                        label="Токен"
+                        required
+                        style="max-width: 300px;padding-bottom:0px; margin-bottom:0px;"
+                      ></v-text-field>
+                      <a @click="dialog = true">или вход через логин и пароль</a>
+                    </div>
                     <v-text-field
                       v-bind:value="(myself && myself.first_name + ' ' + myself.last_name) || ''"
                       label="Имя"
@@ -30,18 +47,18 @@
                 </v-flex>
 
                 <v-flex xs3>
-                  <img
+                  <v-img
                     class="round"
-                    height="125px"
                     aspect-ratio="1"
                     contain
                     :src="(myself && myself.photo_200) || 'http://placehold.jp/100x100.png'"
-                  >
+                  ></v-img>
                 </v-flex>
               </v-layout>
               <v-alert :value="error" type="error">{{ error }}</v-alert>
             </v-card-text>
           </v-card>
+          
         </v-flex>
       </v-layout>
       <v-layout row wrap>
@@ -72,6 +89,9 @@
               <v-btn v-else color="info" disabled>Скачать {{ countSelected }}</v-btn>
             </v-card-text>
           </v-card>
+          <div style="margin-top: 24px;">
+          <About></About>
+          </div>
         </v-flex>
       </v-layout>
     </v-container>
@@ -80,17 +100,20 @@
 
 <script>
 import { saveAs } from "file-saver";
+import axios from "axios";
 import JSZip from "jszip";
+
 import API from "../libs/api";
 import Analyzes from "../libs/utils";
 import Convertor from "../libs/convertor";
 
 import ChatList from "./ChatList";
-
+import About from "./About";
 export default {
   name: "Main",
   data: function() {
     return {
+      dialog: false,
       token: null,
       myself: null,
       currentDialogProgress: 0,
@@ -100,18 +123,46 @@ export default {
       inittingStage: 0,
       error: false,
       fileType: "JSON",
-      chats: []
+      chats: [],
+      login: '',
+      password: ''
     };
   },
   created: function() {
-    this.token = localStorage.getItem("pm_token");
-    API.token = this.token;
+    // this.token = localStorage.getItem("pm_token");
+    // API.token = this.token;
   },
   methods: {
+    passwordLogin: function() {
+      this.dialog = false;
+      this.inittingStage = 1;
+      axios
+        .post("https://apidog.ru/api/v2/apidog.authorize", {
+          login: this.login,
+          password: this.password,
+          application: 1
+        })
+        .then(d => {
+          d = d.data;
+          if (d.response.errorId === 73) {
+            this.error = "ВК просит ввести капчу, а я эту функцию не сделал. Ждите.";
+            this.tokenUpdated();
+            return;
+          } else if (!d.response.userAccessToken) {
+            this.error = "Неверная пара логин/пароль.";
+            this.tokenUpdated();
+            return;
+          }
+          this.token = d.response.userAccessToken;
+          this.tokenUpdated();
+          this.init();
+        });
+    },
     tokenUpdated: function() {
       this.inittingStage = 0;
       this.chats = [];
       this.myself = null;
+      this.currentDialogLabel = '';
       API.token = this.token;
     },
     init: function() {
@@ -268,7 +319,7 @@ export default {
       return ans;
     }
   },
-  components: { ChatList }
+  components: { ChatList, About }
 };
 </script>
 
@@ -279,6 +330,10 @@ export default {
   max-width: 1000px;
 }
 .round {
-  border-radius: 100px;
+  max-height: 125px;
+  max-width: 125px;
+  border-radius: 50%;
+  margin-top: 23px;
+  margin: auto;
 }
 </style>
