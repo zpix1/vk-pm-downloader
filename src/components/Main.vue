@@ -1,9 +1,31 @@
 <template>
   <div class="text-xs-center wrapper">
-    Ваш токен:
-    <input v-bind:value="token">
-    <div>Ваше имя: {{ name }}</div>
-    <v-container fluid grid-list-xl>
+    <v-container fluid grid-list-xl style="padding-top: 0;">
+      <v-layout row wrap>
+        <v-flex md12 xs12>
+          <v-card>
+            <v-subheader>Ваш аккаунт</v-subheader>
+            <v-card-text>
+              <v-layout row>
+                <v-flex xs9>
+                  <v-form class="text-xs-left">
+                    <v-text-field v-model="token" label="Токен" required style="max-width: 300px;"></v-text-field>
+                    <v-text-field
+                      v-bind:value="(myself && myself.first_name + ' ' + myself.last_name) || ''"
+                      label="Имя"
+                      readonly
+                    ></v-text-field>
+                    <v-btn color="success">Войти</v-btn>
+                  </v-form>
+                </v-flex>
+                <v-flex xs3>
+                  <v-img height="125px" aspect-ratio="1" contain :src="(myself && myself.photo_100) || 'http://placehold.jp/100x100.png'"></v-img>
+                </v-flex>
+              </v-layout>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
       <v-layout row wrap>
         <v-flex md8 xs12>
           <ChatList v-bind:chats="chats"/>
@@ -11,7 +33,7 @@
         <v-flex md4 xs12>
           <v-card>
             <v-subheader>Скачать</v-subheader>
-            <div> {{ currentDialogLabel }} </div>
+            <div>{{ currentDialogLabel }}</div>
             <v-progress-linear v-if="downloading" v-model="currentDialogProgress"></v-progress-linear>
             <v-progress-linear hidden v-model="currentDialogPart"></v-progress-linear>
             <v-card-text style="padding-top: 0px;">
@@ -52,7 +74,7 @@ export default {
   data: function() {
     return {
       token: null,
-      name: null,
+      myself: null,
       currentDialogProgress: 0,
       currentDialogLabel: "",
       currentDialogPart: 0,
@@ -62,17 +84,14 @@ export default {
     };
   },
   created: function() {
-    
-
     this.token = localStorage.getItem("pm_token");
     API.token = this.token;
-    
-    API.loadVK("users.get", { fields: 'photo_50'}, d => {
-      this.name = `${d[0].first_name} ${d[0].last_name}`;
+
+    API.loadVK("users.get", { fields: "photo_50, photo_100" }, d => {
+      this.myself = d[0];
       API.uid = d[0].id;
       API.myself = d[0];
     });
-
 
     API.loadVK(
       "execute",
@@ -104,7 +123,7 @@ export default {
   },
   methods: {
     reportProgress: function(status, current, max) {
-      this.currentDialogProgress = Math.ceil(current/max*100);
+      this.currentDialogProgress = Math.ceil((current / max) * 100);
       if (max == 0) {
         this.currentDialogLabel = `${status}`;
       } else {
@@ -112,7 +131,7 @@ export default {
       }
     },
     reportDialogProgress: function(status, current, max) {
-      this.currentDialogPart = Math.ceil(current/max*100);
+      this.currentDialogPart = Math.ceil((current / max) * 100);
     },
     downloadSelected: function() {
       this.downloading = true;
@@ -121,28 +140,46 @@ export default {
       var selectedChats = this.chats.filter(c => c.selected);
       var len = selectedChats.length;
       var i = 0;
-      
+
       var callback = obj => {
-        var blob
+        var blob;
         if (this.fileType === "JSON") {
-          blob = new Blob([obj.data], {type : 'application/json'});
+          blob = new Blob([obj.data], { type: "application/json" });
         } else {
-          blob = new Blob([obj.data], {type : 'application/html'});
+          blob = new Blob([obj.data], { type: "application/html" });
         }
-        
+
         zip.file(obj.filename, blob);
         setTimeout(() => {
           i++;
           if (i < len) {
             let peerID = selectedChats[i].peer_id;
             if (peerID > 0) {
-              this.reportProgress(`Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`, i + 1, len);
-              Analyzes.dialog(peerID, convertCallback, this.reportDialogProgress, `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`);
+              this.reportProgress(
+                `Загрузка ${selectedChats[i].peerInfo.first_name} ${
+                  selectedChats[i].peerInfo.last_name
+                }`,
+                i + 1,
+                len
+              );
+              Analyzes.dialog(
+                peerID,
+                convertCallback,
+                this.reportDialogProgress,
+                `${selectedChats[i].peerInfo.first_name} ${
+                  selectedChats[i].peerInfo.last_name
+                }`
+              );
             }
           } else {
             this.reportProgress("Создание zip архива", 0, 0);
             zip.generateAsync({ type: "blob" }).then(content => {
-              saveAs(content, `result${this.fileType}_${new Date(Date.now()).toLocaleString().replace(/, /g, "_")}.zip`);
+              saveAs(
+                content,
+                `result${this.fileType}_${new Date(Date.now())
+                  .toLocaleString()
+                  .replace(/, /g, "_")}.zip`
+              );
               this.reportProgress("Готово", 0, 0);
               this.downloading = false;
             });
@@ -150,15 +187,32 @@ export default {
         }, 1000);
       };
       var convertCallback = json => {
-        if (this.fileType === 'HTML') {
-          this.reportProgress(`Конвертация в HTML ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`, i + 1, len);
+        if (this.fileType === "HTML") {
+          this.reportProgress(
+            `Конвертация в HTML ${selectedChats[i].peerInfo.first_name} ${
+              selectedChats[i].peerInfo.last_name
+            }`,
+            i + 1,
+            len
+          );
           Convertor.json2html(json, API.uid, callback);
-        }
-        else
-          callback(json);
+        } else callback(json);
       };
-      this.reportProgress(`Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`, i + 1, len);
-      Analyzes.dialog(selectedChats[i].peer_id, convertCallback, this.reportDialogProgress, `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`);
+      this.reportProgress(
+        `Загрузка ${selectedChats[i].peerInfo.first_name} ${
+          selectedChats[i].peerInfo.last_name
+        }`,
+        i + 1,
+        len
+      );
+      Analyzes.dialog(
+        selectedChats[i].peer_id,
+        convertCallback,
+        this.reportDialogProgress,
+        `${selectedChats[i].peerInfo.first_name} ${
+          selectedChats[i].peerInfo.last_name
+        }`
+      );
     }
   },
   computed: {
