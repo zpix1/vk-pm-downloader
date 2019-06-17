@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">PM Downloader</div>
+      <div class="header">PM Downloader v1.0</div>
       <Main/>
     </main>
   </v-app>

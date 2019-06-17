@@ -9,19 +9,37 @@
               <v-layout row>
                 <v-flex xs9>
                   <v-form class="text-xs-left">
-                    <v-text-field v-model="token" label="Токен" required style="max-width: 300px;"></v-text-field>
+                    <v-text-field
+                      v-model="token"
+                      @change="tokenUpdated"
+                      label="Токен"
+                      required
+                      style="max-width: 300px;"
+                    ></v-text-field>
                     <v-text-field
                       v-bind:value="(myself && myself.first_name + ' ' + myself.last_name) || ''"
                       label="Имя"
                       readonly
+                      disabled
                     ></v-text-field>
-                    <v-btn color="success">Войти</v-btn>
+                    <v-btn v-if="inittingStage === 0" color="success" @click="init">Войти</v-btn>
+                    <v-btn v-else color="success" disabled>Войти</v-btn>
+
+                    <v-progress-circular v-if="inittingStage === 1" indeterminate color="primary"></v-progress-circular>
                   </v-form>
                 </v-flex>
+
                 <v-flex xs3>
-                  <v-img height="125px" aspect-ratio="1" contain :src="(myself && myself.photo_100) || 'http://placehold.jp/100x100.png'"></v-img>
+                  <img
+                    class="round"
+                    height="125px"
+                    aspect-ratio="1"
+                    contain
+                    :src="(myself && myself.photo_200) || 'http://placehold.jp/100x100.png'"
+                  >
                 </v-flex>
               </v-layout>
+              <v-alert :value="error" type="error">{{ error }}</v-alert>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -79,6 +97,8 @@ export default {
       currentDialogLabel: "",
       currentDialogPart: 0,
       downloading: false,
+      inittingStage: 0,
+      error: false,
       fileType: "JSON",
       chats: []
     };
@@ -86,42 +106,66 @@ export default {
   created: function() {
     this.token = localStorage.getItem("pm_token");
     API.token = this.token;
-
-    API.loadVK("users.get", { fields: "photo_50, photo_100" }, d => {
-      this.myself = d[0];
-      API.uid = d[0].id;
-      API.myself = d[0];
-    });
-
-    API.loadVK(
-      "execute",
-      {
-        code:
-          "return API.messages.getConversations({count:40,extended:1,v:5.80});"
-      },
-      d => {
-        let ans = [];
-        for (let i = 0; i < d.items.length; i++) {
-          let pid = d.items[i].conversation.peer.id;
-          for (let j = 0; j < d.profiles.length; j++) {
-            if (d.profiles[j].id < 0) break;
-            if (d.profiles[j].id === pid) {
-              ans.push({
-                peer_id: pid,
-                last_message: d.items[i].last_message,
-                peerInfo: d.profiles[j],
-                selected: true
-              });
-              d.items[i].peerInfo = d.profiles[j];
-              break;
-            }
-          }
-        }
-        this.chats = ans;
-      }
-    );
   },
   methods: {
+    tokenUpdated: function() {
+      this.inittingStage = 0;
+      this.chats = [];
+      this.myself = null;
+      API.token = this.token;
+    },
+    init: function() {
+      this.error = false;
+      this.inittingStage = 1;
+      API.loadVK(
+        "users.get",
+        { fields: "photo_50, photo_100, photo_200" },
+        d => {
+          if (!d) {
+            this.error = "Токен не валиден или недостаточно прав.";
+            this.tokenUpdated();
+            return;
+          }
+          this.myself = d[0];
+          API.uid = d[0].id;
+          API.myself = d[0];
+        }
+      );
+
+      API.loadVK(
+        "execute",
+        {
+          code:
+            "return API.messages.getConversations({count:40,extended:1,v:5.80});"
+        },
+        d => {
+          if (!d) {
+            this.error = "Токен не валиден или недостаточно прав.";
+            this.tokenUpdated();
+            return;
+          }
+          let ans = [];
+          for (let i = 0; i < d.items.length; i++) {
+            let pid = d.items[i].conversation.peer.id;
+            for (let j = 0; j < d.profiles.length; j++) {
+              if (d.profiles[j].id < 0) break;
+              if (d.profiles[j].id === pid) {
+                ans.push({
+                  peer_id: pid,
+                  last_message: d.items[i].last_message,
+                  peerInfo: d.profiles[j],
+                  selected: true
+                });
+                d.items[i].peerInfo = d.profiles[j];
+                break;
+              }
+            }
+          }
+          this.chats = ans;
+          this.inittingStage = 3;
+        }
+      );
+    },
     reportProgress: function(status, current, max) {
       this.currentDialogProgress = Math.ceil((current / max) * 100);
       if (max == 0) {
@@ -233,5 +277,8 @@ export default {
   margin: auto;
   text-align: center;
   max-width: 1000px;
+}
+.round {
+  border-radius: 100px;
 }
 </style>
