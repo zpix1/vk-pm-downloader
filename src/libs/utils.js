@@ -1,6 +1,8 @@
 import API from "./api";
+import { slugify } from 'transliteration';
+
 var Analyzes = {
-	dialog: function (peerId, callback, statusFunction) {
+	dialog: function (peerId, callback, statusFunction, peerName='') {
 		var tsStatus,
 			pbStatus,
 
@@ -153,7 +155,7 @@ var Analyzes = {
                 db.forEach(function (item) {
                     json.push(saver.minifyMessage(item));
                 });
-                var blob = new Blob(["\ufeff", JSON.stringify({
+                var jsonString = JSON.stringify({
                     meta: {
                         v: "1.2",
                         p: peerId,
@@ -164,12 +166,10 @@ var Analyzes = {
                         d: parseInt(new Date() / 1000),
                     },
                     data: json
-                })], {
-                    type: "application/json;charset=utf-8"
-                });
+                })
 
                 // saveAs(blob, "dialog" + peerId + ".json");
-                callback({'filename': "dialog" + peerId + ".json", data: blob});
+                callback({'filename': "dialog" + peerId + "_" + slugify(peerName).replace(/-/g, "_") + ".json", data: jsonString});
 			},
 			d2006 = 1138741200,
 			saver = {
@@ -269,48 +269,16 @@ var Analyzes = {
 		init();
 	},
 	statDialogChate: null,
-	openDialogFile: function () {
+	openDialogFile: function (jsonText) {
 		var pageWrap,
 			filePickerForm,
-			openFile = function (fileNode) {
-				var file = fileNode.files[0];
-
-				if (!file) {
-					return alert("Вы не выбрали файл");
-				}
-
-				var fr = new FileReader();
-				fr.onerror = function (event) {
-					console.error("Analyzes.openDialogFile@openFile", event);
-					alert("Произошла ошибка чтения файла.\n\n" + event.toString());
-				};
-				fr.onload = function (event) {
-					console.info("Analyzes.openDialogFile@openFile", event);
-					return checkFile(fr.result);
-				};
-				fr.readAsText(file);
-			},
-			checkFile = function (data) {
-				try {
-					data = JSON.parse(data);
-					if (!data.meta || data.meta && (!data.meta.t || !data.meta.v || !data.meta.p || !data.meta.d) || !data.data)
-						throw "Неизвестный формат";
-				}
-				catch (e) {
-					console.error("Analyzes.openDialogFile@checkFile: ", e);
-					return alert("Ошибка чтения файла.\nФайл поврежден и/или имеет неизвестную структуру.")
-				}
-				finally {
-					return readFile(data);
-				}
-			},
 			dialogActivity,
 			showDialogActivity = function () {
 				if (dialogActivity) {
 					return dialogActivity;
 				}
 
-				dialogActivity = e("div", {"class": "imdialog-list imdialog-list-chat"});
+				dialogActivity = document.createElement('div');
 				return dialogActivity;
 			},
 			meta,
@@ -341,7 +309,7 @@ var Analyzes = {
 					function (result) {
 						saveUsers(result);
 					});
-				setActivity(showDialogActivity());
+				// setActivity(showDialogActivity());
 				showItems(0);
 			},
 			saveUsers = function (users) {
@@ -352,7 +320,6 @@ var Analyzes = {
 				}
 
 				var w = Local.Users[meta.p];
-				console.log(w);
 
 				$.element("anza").innerHTML = " с " + w.first_name_acc + " " + w.last_name_acc;
 			},
@@ -469,7 +436,13 @@ var Analyzes = {
 						fwd_messages: explainForwardedMessages(i.m)
 					};
 				});
+			},
+			json2html = function (jsonText) {
+				showDialogActivity();
+				readFile(JSON.parse(jsonText));
+				return dialogActivity.outerHTML;
 			};
+			json2html(jsonText);
 	},
 };
 export default Analyzes;

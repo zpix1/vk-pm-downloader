@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./test.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script type="module" src="./convertor.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+</body>
+<script type="module">
+    import Convertor from './convertor.js';
+    Convertor.API.token = localStorage.getItem("pm_token");
+    Convertor.json2html(
+        jsonRes, 387677233, ()=>{})
+</script>
+
+</html>

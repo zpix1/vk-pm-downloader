@@ -27,7 +27,7 @@
             </v-list-tile-content>
 
             <v-list-tile-action>
-              <v-checkbox v-model="c.selected"></v-checkbox>
+              <v-checkbox v-model="c.selected" ></v-checkbox>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
@@ -47,7 +47,7 @@ export default {
   computed: {
     allSelected: {
       get: function() {
-        console.log(this.chats.every(c => c.selected));
+        // console.log(this.chats.every(c => c.selected));
         return this.chats.every(c => c.selected);
       },
       set: function() {
