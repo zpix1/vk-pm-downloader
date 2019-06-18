@@ -9,7 +9,6 @@ var fixDate = function (u) {
 
 function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var year = a.getFullYear();
     var month = a.getMonth() + 1;
     var date = a.getDate();
@@ -135,7 +134,7 @@ async function getUser(id) {
 async function json2html(object, my_id, callback) {
     var data = JSON.parse(object.data);
     var newData = [];
-    for (var i = 0; i < data.data.length; i++) {
+    for (let i = 0; i < data.data.length; i++) {
         newData.push(reformatJSON(data.data[i], data.meta, my_id));
     }
     newData = newData.reverse();
@@ -147,7 +146,7 @@ async function json2html(object, my_id, callback) {
     var h1 = document.createElement("h1");
     h1.innerText = "PM Downloader // 2019.06";
     div.appendChild(h1);
-    for (var i = 0; i < newData.length; i++) {
+    for (let i = 0; i < newData.length; i++) {
         if (newData[i].out)
             div.appendChild((await message2tag(newData[i], myself)))
         else
@@ -166,7 +165,6 @@ async function json2html(object, my_id, callback) {
         <body>
         </body>
         `
-    console.log(html);
     html.getElementsByTagName("body")[0].appendChild(div);
 
     var outerDiv = document.createElement('div');
@@ -216,7 +214,7 @@ async function message2tag(message, sender) {
         var attachmentDiv = document.createElement('div');
         attachmentDiv.className = 'attachments';
         attachmentDiv.id = 'attach' + message.id;
-        for (var i = 0; i < message.attachments.length; i++) {
+        for (let i = 0; i < message.attachments.length; i++) {
             var attachment = message.attachments[i];
             attachmentDiv.appendChild(generateAttachment(attachment));
         }
@@ -226,7 +224,7 @@ async function message2tag(message, sender) {
     if (message.fwd_messages) {
         var fwdDiv = document.createElement('div');
         fwdDiv.className = 'fwd';
-        for (var i = 0; i < message.fwd_messages.length; i++) {
+        for (let i = 0; i < message.fwd_messages.length; i++) {
             var fwd = message.fwd_messages[i];
             fwdDiv.appendChild(await message2tag(fwd, await getUser(fwd.user_id)));
         }
@@ -272,18 +270,3 @@ function generateAttachment(attachment) {
 Convertor.json2html = json2html;
 
 export default Convertor;
-
-
-// json2html('{"meta":{"v":"1.2","p":"185014513","a":387677233,"t":"Ирина Денежкина","d":1560687836},"data":[{"i":2034,"f":387677233,"t":"resend test","d":421946610,"m":[{"f":144872352,"t":"1","d":406902618}]},{"i":2033,"f":387677233,"t":"photo test","d":421946589,"a":[{"t":0,"s":{"m":"https://pp.userapi.com/c639522/v639522646/526a5/enf3Vhba6aw.jpg","s":"https://pp.userapi.com/c639522/v639522646/526a4/xrodex__8Sg.jpg","n":"https://pp.userapi.com/c639522/v639522646/526a3/72wfDsIsZ0E.jpg","o":"https://pp.userapi.com/c639522/v639522646/526a2/T23qYTiCSAk.jpg","t":"https://pp.userapi.com/c639522/v639522646/526a1/fFkfSufBUvY.jpg"},"z":"","q":0,"w":0,"o":387677233,"i":456239059,"d":368288329}]},{"i":894,"f":387677233,"t":"Test ","d":350326816},{"i":893,"f":387677233,"t":"Test ","d":350326795},{"i":892,"f":387677233,"t":"Test ","d":350326758},{"i":891,"f":387677233,"t":"Test! ","d":350326708},{"i":890,"f":387677233,"t":"Test! ","d":350326665},{"i":889,"f":387677233,"t":"Test! ","d":350326489}]}',
-// {id: 387677233, first_name: "Мария", last_name: "Краснова", photo_50: "https://pp.userapi.com/c639522/v639522646/526af/UdUjQdtW6X4.jpg?ava=1"})
-
-// export default Convertor
-// attachments: false
-// body: "Что не забыть?"
-// date: 1501495932
-// from_id: 60364266
-// fwd_messages: false
-// id: 1548
-// out: false
-// read_state: true
-// user_id: 60364266

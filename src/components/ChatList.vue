@@ -40,10 +40,6 @@
 export default {
   name: "ChatList",
   props: ["chats"],
-  data: function() {
-    return {
-    };
-  },
   computed: {
     allSelected: {
       get: function() {
