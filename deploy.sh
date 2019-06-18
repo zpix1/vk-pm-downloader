@@ -12,7 +12,7 @@ cd dist
 # если вы публикуете на пользовательский домен
 # echo 'www.example.com' > CNAME
 
-# git init
+git init
 git add -A
 git commit -m 'deploy'
 
