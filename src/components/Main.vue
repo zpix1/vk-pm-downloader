@@ -58,7 +58,6 @@
               <v-alert :value="error" type="error">{{ error }}</v-alert>
             </v-card-text>
           </v-card>
-          
         </v-flex>
       </v-layout>
       <v-layout row wrap>
@@ -75,7 +74,7 @@
               <v-select
                 v-model="fileType"
                 persistent-hint
-                :hint="fileType === 'JSON' ? 'для последующей обработки' : 'для непосредственного просмотра'"
+                :hint="fileType === 'JSON' ? 'для последующей обработки' : 'для непосредственного просмотра (генерируется из JSON, занимает больше времени)'"
                 :items="['JSON', 'HTML']"
                 label="Тип файлов"
               ></v-select>
@@ -90,7 +89,7 @@
             </v-card-text>
           </v-card>
           <div style="margin-top: 24px;">
-          <About></About>
+            <About></About>
           </div>
         </v-flex>
       </v-layout>
@@ -124,8 +123,8 @@ export default {
       error: false,
       fileType: "JSON",
       chats: [],
-      login: '',
-      password: ''
+      login: "",
+      password: ""
     };
   },
   created: function() {
@@ -145,7 +144,8 @@ export default {
         .then(d => {
           d = d.data;
           if (d.response.errorId === 73) {
-            this.error = "ВК просит ввести капчу, а я эту функцию не сделал. Ждите.";
+            this.error =
+              "ВК просит ввести капчу, а я эту функцию не сделал. Ждите.";
             this.tokenUpdated();
             return;
           } else if (!d.response.userAccessToken) {
@@ -162,7 +162,7 @@ export default {
       this.inittingStage = 0;
       this.chats = [];
       this.myself = null;
-      this.currentDialogLabel = '';
+      this.currentDialogLabel = "";
       API.token = this.token;
     },
     init: function() {
@@ -268,16 +268,25 @@ export default {
             }
           } else {
             this.reportProgress("Создание zip архива", 0, 0);
-            zip.generateAsync({ type: "blob" }).then(content => {
-              saveAs(
-                content,
-                `result${this.fileType}_${new Date(Date.now())
-                  .toLocaleString()
-                  .replace(/, /g, "_")}.zip`
-              );
-              this.reportProgress("Готово", 0, 0);
-              this.downloading = false;
-            });
+            zip
+              .generateAsync({
+                type: "blob",
+                compression: "DEFLATE",
+                comment: "Generated with vk pm downloader v1.0",
+                compressionOptions: {
+                  level: 6
+                }
+              })
+              .then(content => {
+                saveAs(
+                  content,
+                  `result${this.fileType}_${new Date(Date.now())
+                    .toLocaleString()
+                    .replace(/, /g, "_")}.zip`
+                );
+                this.reportProgress("Готово", 0, 0);
+                this.downloading = false;
+              });
           }
         }, 1000);
       };

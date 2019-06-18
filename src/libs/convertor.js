@@ -1,4 +1,6 @@
 import API from './api.js';
+import {galleryJS, galleryCSS} from './gallery';
+import { Script } from 'vm';
 
 var Convertor = {}
 Convertor.API = API;
@@ -161,12 +163,16 @@ async function json2html(object, my_id, callback) {
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <title>PM Downloader ${object.filename.replace('.json', '.html')}</title>
             <style>h4{font-family:inherit;font-weight:500;line-height:1.1;color:inherit;margin-top:10px;margin-bottom:10px;font-size:18px}body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#fff;margin:0}hr{height:0;margin-top:20px;margin-bottom:20px;border:0;border-top:1px solid #eee}.messages{margin:30px;text-align:left}.msg_item{overflow:hidden}.from,.msg_body,.att_head,.attacments,.attacment,.fwd{margin-left:60px;min-height:1px;padding-right:15px;padding-left:15px}.msg_item{margin-top:5px}.upic{float:left}.upic img{vertical-align:top;padding:5px;width:50px;height:50px}.round_upic .upic img{border-radius:50%}a{color:#337ab7;text-decoration:none}a:active,a:hover{outline:0}a:focus,a:hover{color:#23527c;text-decoration:underline}.att_head{color:#777}.att_ico{float:left;width:11px;height:11px;margin:3px 3px 2px;background-image:url(http://vk.com/images/icons/mono_iconset.gif)}.att_photo{background-position:0 -30px;width:200px}.att_audio{background-position:0 -222px}.att_video{background-position:0 -75px}.att_doc{background-position:0 -280px}.att_wall,.att_fwd{background-position:0 -194px}.att_gift{background-position:0 -105px}.att_sticker{background-position:0 -362px;width:12px;height:12px}.att_link{background-position:0 -237px}.attb_link a span{color:#777!important}.att_geo{background-position:0 -165px}.fwd{border:2px solid #C3D1E0;border-width:0 0 0 2px;margin-left:85px}.attachments{margin:5px;border:1px solid #ccc;float:left}.hidden_ta_at{display:none}.main_wrapper{margin:auto;max-width:1000px}</style>
-        </head>
+            <style>${galleryCSS}</style>
+            </head>
+            <script>${galleryJS}</script>
         <body>
         </body>
         `
     html.getElementsByTagName("body")[0].appendChild(div);
-
+    var galleryScript = document.createElement('script');
+    galleryScript.innerText = `baguetteBox.run('.gallery');`;
+    html.getElementsByTagName("body")[0].appendChild(galleryScript);
     var outerDiv = document.createElement('div');
     outerDiv.appendChild(html);
     callback({
@@ -226,7 +232,11 @@ async function message2tag(message, sender) {
         fwdDiv.className = 'fwd';
         for (let i = 0; i < message.fwd_messages.length; i++) {
             var fwd = message.fwd_messages[i];
-            fwdDiv.appendChild(await message2tag(fwd, await getUser(fwd.user_id)));
+            var u = await getUser(fwd.user_id);
+            if (!u) {
+                u = {id: fwd.user_id, first_name: "Ошибка", last_name: `Профиля id${fwd.user_id}`, photo_100: "https://vk.com/images/deactivated_100.png?ava=1"}
+            }
+            fwdDiv.appendChild(await message2tag(fwd, u));
         }
         div.appendChild(fwdDiv);
     }
@@ -254,13 +264,22 @@ function generateAttachment(attachment) {
     var div = document.createElement('div');
     var ta = document.createElement('textarea');
     ta.className = "hidden_ta_at";
-    ta.innerText = JSON.stringify(attachment[attachment.type]);
+    ta.innerText = JSON.stringify(attachment);
     div.appendChild(ta);
     if (attachment.type === 'photo') {
+        // <a href="demo/images/4big.jpg" title="Caption for gallery item 1"><img src="demo/images/4small.jpg" alt="Gallery image 1" /></a>
+        var gDiv = document.createElement('div');
+        gDiv.className = 'gallery';
+
+        var imgA = document.createElement('a');
+        imgA.href = maxRes(attachment[attachment.type])[0];
+
         var img = document.createElement('img');
-        img.className = "att_photo";
         img.src = maxRes(attachment[attachment.type])[1];
-        div.appendChild(img);
+
+        imgA.appendChild(img);
+        gDiv.appendChild(imgA);
+        div.appendChild(gDiv);
     } else {
         ta.className = '';
     }
