@@ -1,6 +1,5 @@
 import API from './api.js';
-import {galleryJS, galleryCSS} from './gallery';
-import { Script } from 'vm';
+import { galleryJS, galleryCSS } from './gallery';
 
 var Convertor = {}
 Convertor.API = API;

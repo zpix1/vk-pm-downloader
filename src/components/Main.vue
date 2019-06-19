@@ -128,8 +128,8 @@ export default {
     };
   },
   created: function() {
-    // this.token = localStorage.getItem("pm_token");
-    // API.token = this.token;
+    this.token = localStorage.getItem("pm_token");
+    API.token = this.token;
   },
   methods: {
     passwordLogin: function() {
@@ -183,32 +183,43 @@ export default {
         }
       );
 
+      var str = [];
+
+      for (var i = 0; i < 25; i++) {
+        str.push(
+          `API.messages.getConversations({offset: ${i*40}, count:40, extended: 1, v:5.80})`
+        );
+      }
+
       API.loadVK(
         "execute",
         {
           code:
-            "return API.messages.getConversations({count:40,extended:1,v:5.80});"
+           "return[" + str.join(",") + "];"
         },
-        d => {
-          if (!d) {
+        data => {
+          if (!data) {
             this.error = "Токен не валиден или недостаточно прав.";
             this.tokenUpdated();
             return;
           }
           let ans = [];
-          for (let i = 0; i < d.items.length; i++) {
-            let pid = d.items[i].conversation.peer.id;
-            for (let j = 0; j < d.profiles.length; j++) {
-              if (d.profiles[j].id < 0) break;
-              if (d.profiles[j].id === pid) {
-                ans.push({
-                  peer_id: pid,
-                  last_message: d.items[i].last_message,
-                  peerInfo: d.profiles[j],
-                  selected: true
-                });
-                d.items[i].peerInfo = d.profiles[j];
-                break;
+          for (let idx = 0; idx < data.length; idx++) {
+            let d = data[idx];
+            for (let i = 0; i < d.items.length; i++) {
+              let pid = d.items[i].conversation.peer.id;
+              for (let j = 0; j < d.profiles.length; j++) {
+                if (d.profiles[j].id < 0) break;
+                if (d.profiles[j].id === pid) {
+                  ans.push({
+                    peer_id: pid,
+                    last_message: d.items[i].last_message,
+                    peerInfo: d.profiles[j],
+                    selected: true
+                  });
+                  d.items[i].peerInfo = d.profiles[j];
+                  break;
+                }
               }
             }
           }
