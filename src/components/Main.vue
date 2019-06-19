@@ -121,15 +121,15 @@ export default {
       downloading: false,
       inittingStage: 0,
       error: false,
-      fileType: "JSON",
+      fileType: "HTML",
       chats: [],
       login: "",
       password: ""
     };
   },
   created: function() {
-    this.token = localStorage.getItem("pm_token");
-    API.token = this.token;
+    // this.token = localStorage.getItem("pm_token");
+    // API.token = this.token;
   },
   methods: {
     passwordLogin: function() {

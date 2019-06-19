@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">VK PM Downloader v1.0</div>
+      <div class="header">VK PM Downloader v1.1</div>
       <Main/>
     </main>
   </v-app>
