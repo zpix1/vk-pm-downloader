@@ -12,15 +12,61 @@
 <body>
 </body>
 <script>
-    var login = 'zpix-dev@list.ru';
-    var password = 'QSKpDKwYZx9X';
-    axios.post('https://apidog.ru/api/v2/apidog.authorize', {
-        login: login,
-        password: password,
-        application: 1
-    }).then((d) => {
-        console.log(d.data.response.userAccessToken);
-    });
+    function shuffle(array) {
+        var currentIndex = array.length,
+            temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
+    function isPrime(num) {
+        for (let i = 2; i * i < num; i++) {
+            if (num % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function generateActivationCodes() {
+        var pArray = [];
+        for (var i = 1000; i < 10000; i++) {
+            if (isPrime(i)) {
+                pArray.push(i);
+            }
+        }
+        pArray = shuffle(pArray);
+        for (var i = 0; i < pArray.length; i += 4) {
+            var abcd = pArray.slice(i, i + 4);
+            if (abcd.length != 4)
+                break;
+
+            abcd.sort(function (a, b) {
+                return a-b
+            });
+            
+            var a = abcd[0];
+            var b = abcd[1];
+            var c = abcd[2];
+            var d = abcd[3];
+            console.log(`${b}-${d}-${c}-${a}`);
+        }
+    }
+
+    generateActivationCodes();
 </script>
 
 </html>

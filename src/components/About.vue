@@ -50,12 +50,12 @@
             <a @click="moreInformationModel = true">Больше информации</a>
           </p>
 
-          <p>
+          <!-- <p>
             Принимаю любые пожертвования
             <a
               href="https://money.yandex.ru/to/410017309153417"
             >Яндекс Деньги</a>
-          </p>
+          </p> -->
         </div>Сделал
         <a href="https://zpix1.github.io" target="_blank">@zpix</a> в 2019
         <br>

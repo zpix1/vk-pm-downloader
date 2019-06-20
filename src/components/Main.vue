@@ -128,8 +128,8 @@ export default {
     };
   },
   created: function() {
-    this.token = localStorage.getItem("pm_token");
-    API.token = this.token;
+    // this.token = localStorage.getItem("pm_token");
+    // API.token = this.token;
   },
   methods: {
     passwordLogin: function() {
