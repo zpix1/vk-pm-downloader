@@ -128,8 +128,10 @@ export default {
     };
   },
   created: function() {
-    // this.token = localStorage.getItem("pm_token");
-    // API.token = this.token;
+    if (process.env.NODE_ENV === 'development') {
+      this.token = localStorage.getItem("pm_token");
+      API.token = this.token;
+    }
   },
   methods: {
     passwordLogin: function() {

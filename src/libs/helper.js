@@ -3,6 +3,21 @@ function declOfNum(number, titles) {
     return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 
+function getRanges(array) {
+    var ranges = [], rstart, rend;
+    for (var i = 0; i < array.length; i++) {
+        rstart = array[i];
+        rend = rstart;
+        while (array[i + 1] - array[i] == 1) {
+            rend = array[i + 1];
+            i++;
+        }
+        ranges.push(rstart == rend ? rstart+'' : rstart + '-' + rend);
+    }
+    return ranges;
+}
+  
+
 function isPrime(num) {
     for (let i = 2; i * i < num; i++) {
         if (num % i == 0) {
@@ -35,5 +50,6 @@ function checkActivationCode(code) {
 
 export {
     declOfNum,
-    checkActivationCode
+    checkActivationCode,
+    getRanges
 }
