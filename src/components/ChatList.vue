@@ -115,7 +115,6 @@ export default {
     }
   },
   created: function() {
-
     this.code = localStorage.getItem("pm_activation_code", this.code);
     if (checkActivationCode(this.code)) {
       this.selectLast = true;

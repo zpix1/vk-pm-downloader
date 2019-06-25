@@ -1,4 +1,6 @@
 import axios from 'axios';
+axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
+
 var API = {token: null}
 var CORS = '';
 if (process.env.NODE_ENV === 'development') {

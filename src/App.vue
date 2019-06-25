@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">VK PM Downloader v1.1</div>
+      <div class="header">VK PM Downloader v{{ v }}</div> 
       <Main/>
     </main>
   </v-app>
@@ -14,6 +14,11 @@ export default {
   name: "app",
   components: {
     Main
+  },
+  computed: {
+    v: function () {
+      return process.env.VERSION;
+    }
   }
 };
 </script>
