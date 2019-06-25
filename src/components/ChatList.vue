@@ -111,7 +111,7 @@ export default {
         }
       }
       this.chatRangeText = getRanges(selected).join(", ");
-      console.log(getRanges(selected));
+      // console.log(getRanges(selected));
     }
   },
   created: function() {
@@ -122,7 +122,7 @@ export default {
     }
   },
   watch: {
-    chats: function(oldV, newV) {
+    chats: function () {
       if (!this.selectLast) {
         for (let i = this.showChatsCount; i < this.chats.length; i++) {
           this.chats[i].selected = false;
@@ -131,7 +131,7 @@ export default {
       }
       this.chatsUpdated();
     },
-    chatRangeText: function(oldV, newV) {}
+    chatRangeText: function () {}
   },
   computed: {
     allSelected: {

@@ -51,7 +51,7 @@
                     class="round"
                     aspect-ratio="1"
                     contain
-                    :src="(myself && myself.photo_200) || 'http://placehold.jp/100x100.png'"
+                    :src="(myself && myself.photo_200) || 'https://placehold.jp/100x100.png'"
                   ></v-img>
                 </v-flex>
               </v-layout>
@@ -182,6 +182,10 @@ export default {
           this.myself = d[0];
           API.uid = d[0].id;
           API.myself = d[0];
+        },
+        (e) => {
+          this.error = `Ошибка сети (${e})`;
+          this.tokenUpdated();
         }
       );
 
@@ -227,6 +231,10 @@ export default {
           }
           this.chats = ans;
           this.inittingStage = 3;
+        },
+        (e) => {
+          this.error = `Ошибка сети (${e})`;
+          this.tokenUpdated();
         }
       );
     },

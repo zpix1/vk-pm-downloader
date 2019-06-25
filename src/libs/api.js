@@ -1,20 +1,34 @@
-import axios from 'axios';
-axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
-
-var API = {token: null}
-var CORS = '';
-if (process.env.NODE_ENV === 'development') {
-    CORS = 'https://cors-anywhere.herokuapp.com/'
+import jsonp from 'jsonp';
+import jsonpPromise from 'jsonp-promise';
+var API = {
+    token: null
 }
-console.log(CORS);
-API.loadVK = function(method, data, callback) {
-    let url = `${CORS}https://api.vk.com/method/${method}?access_token=${this.token}&v=5.1&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;
+// var CORS = '';
+// if (process.env.NODE_ENV === 'development') {
+//      CORS = 'https://cors-anywhere.herokuapp.com/'
+// }
+// eslint-disable-next-line
+API.loadVK = function (method, data, callback, errorCallback = console.error) {
+    let url = `https://api.vk.com/method/${method}?access_token=${this.token}&v=5.1&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;
     // eslint-disable-next-line
-    axios.get(url).then(d => callback(d.data.response)).catch(console.error);
+    jsonp(url, null, (error, data) => {
+        if (error) {
+            errorCallback(error);
+        } else {
+            callback(data.response);
+        }
+    });
+    // axios.get(url).then(d => callback(d.data.response)).catch(errorCallback);
 }
 API.aloadVK = async function (method, data) {
-    let url = `${CORS}https://api.vk.com/method/${method}?access_token=${this.token}&v=5.1&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;
-    let r = await axios.get(url);
-    return r.data.response;
+    let url = `https://api.vk.com/method/${method}?access_token=${this.token}&v=5.1&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;
+    let r = await jsonpPromise(url, null, (error, data) => {
+        if (error) {
+            console.error(error);
+        } else {
+            return data;
+        }
+    }).promise;
+    return r.response;
 }
 export default API;
