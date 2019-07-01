@@ -24,6 +24,7 @@ API.aloadVK = async function (method, data) {
     let url = `https://api.vk.com/method/${method}?access_token=${this.token}&v=5.1&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;
     let r = await jsonpPromise(url, null, (error, data) => {
         if (error) {
+            // eslint-disable-next-line
             console.error(error);
         } else {
             return data;

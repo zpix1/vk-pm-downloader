@@ -101,10 +101,12 @@
 import { saveAs } from "file-saver";
 import axios from "axios";
 import JSZip from "jszip";
+import { slugify } from 'transliteration';
 
 import API from "../libs/api";
 import Analyzes from "../libs/utils";
 import Convertor from "../libs/convertor";
+import { capitalizeFirstLetter } from "../libs/helper";
 
 import ChatList from "./ChatList";
 import About from "./About";
@@ -293,7 +295,7 @@ export default {
               .generateAsync({
                 type: "blob",
                 compression: "DEFLATE",
-                comment: "Generated with vk pm downloader v1.0",
+                comment: `Generated with VK PM Downloader v${process.env.VERSION}`,
                 compressionOptions: {
                   level: 6
                 }
@@ -301,7 +303,7 @@ export default {
               .then(content => {
                 saveAs(
                   content,
-                  `result${this.fileType}_${new Date(Date.now())
+                  `result_${capitalizeFirstLetter(slugify(this.myself.last_name))}_${capitalizeFirstLetter(slugify(this.myself.first_name))}_(id${this.myself.id})_${this.fileType}_${new Date(Date.now())
                     .toLocaleString()
                     .replace(/, /g, "_")}.zip`
                 );

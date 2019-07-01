@@ -17,6 +17,9 @@ function getRanges(array) {
     return ranges;
 }
   
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function isPrime(num) {
     for (let i = 2; i * i < num; i++) {
@@ -51,5 +54,6 @@ function checkActivationCode(code) {
 export {
     declOfNum,
     checkActivationCode,
-    getRanges
+    getRanges,
+    capitalizeFirstLetter
 }
