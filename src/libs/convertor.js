@@ -1,5 +1,8 @@
 import API from './api.js';
-import { galleryJS, galleryCSS } from './gallery';
+import {
+    galleryJS,
+    galleryCSS
+} from './gallery';
 
 var Convertor = {}
 Convertor.API = API;
@@ -53,7 +56,12 @@ var explainAttachments = function (a) {
                         title: i.n,
                         description: i.z,
                         date: fixDate(i.d),
-                        duration: i.s
+                        duration: i.s,
+                        photo_2560: i.s.m,
+                        photo_1280: i.s.s,
+                        photo_807: i.s.n,
+                        photo_604: i.s.o,
+                        photo_130: i.s.t
                     }
                 };
             case 2:
@@ -65,7 +73,8 @@ var explainAttachments = function (a) {
                         title: a.n,
                         duration: i.d,
                         lyrics_id: i.l,
-                        genre_id: i.g
+                        genre_id: i.g,
+                        url: i.url
                     }
                 };
             case 3:
@@ -75,7 +84,8 @@ var explainAttachments = function (a) {
                         id: i.i,
                         title: i.n,
                         ext: i.e,
-                        size: i.s
+                        size: i.s,
+                        url: i.url
                     }
                 };
             default:
@@ -161,7 +171,20 @@ async function json2html(object, my_id, callback) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <title>PM Downloader ${object.filename.replace('.json', '.html')}</title>
-            <style>h4{font-family:inherit;font-weight:500;line-height:1.1;color:inherit;margin-top:10px;margin-bottom:10px;font-size:18px}body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#fff;margin:0}hr{height:0;margin-top:20px;margin-bottom:20px;border:0;border-top:1px solid #eee}.messages{margin:30px;text-align:left}.msg_item{overflow:hidden}.from,.msg_body,.att_head,.attacments,.attacment,.fwd{margin-left:60px;min-height:1px;padding-right:15px;padding-left:15px}.msg_item{margin-top:5px}.upic{float:left}.upic img{vertical-align:top;padding:5px;width:50px;height:50px}.round_upic .upic img{border-radius:50%}a{color:#337ab7;text-decoration:none}a:active,a:hover{outline:0}a:focus,a:hover{color:#23527c;text-decoration:underline}.att_head{color:#777}.att_ico{float:left;width:11px;height:11px;margin:3px 3px 2px;background-image:url(http://vk.com/images/icons/mono_iconset.gif)}.att_photo{background-position:0 -30px;width:200px}.att_audio{background-position:0 -222px}.att_video{background-position:0 -75px}.att_doc{background-position:0 -280px}.att_wall,.att_fwd{background-position:0 -194px}.att_gift{background-position:0 -105px}.att_sticker{background-position:0 -362px;width:12px;height:12px}.att_link{background-position:0 -237px}.attb_link a span{color:#777!important}.att_geo{background-position:0 -165px}.fwd{border:2px solid #C3D1E0;border-width:0 0 0 2px;margin-left:85px}.attachments{margin:5px;border:1px solid #ccc;float:left}.hidden_ta_at{display:none}.main_wrapper{margin:auto;max-width:1000px}</style>
+            <style>
+            h4{font-family:inherit;font-weight:500;line-height:1.1;color:inherit;margin-top:10px;margin-bottom:10px;font-size:18px}
+            body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#fff;margin:0}
+            hr{height:0;margin-top:20px;margin-bottom:20px;border:0;border-top:1px solid #eee}.messages{margin:30px;text-align:left}.msg_item{overflow:hidden}
+            .from,.msg_body,.att_head,.attachments,.attachment,.fwd{margin-left:60px;min-height:1px;padding-right:15px;padding-left:15px}.msg_item{margin-top:5px}
+            .upic{float:left}.upic img{vertical-align:top;padding:5px;width:50px;height:50px}.round_upic .upic img{border-radius:50%}a{color:#337ab7;text-decoration:none}
+            a:active,a:hover{outline:0}a:focus,a:hover{color:#23527c;text-decoration:underline}
+            .att_head{color:#777}.att_ico{float:left;width:11px;height:11px;margin:3px 3px 2px;background-image:url(http://vk.com/images/icons/mono_iconset.gif)}
+            .att_photo{background-position:0 -30px;max-width:300px;max-height:300px; margin-bottom: 5px;}.att_audio{background-position:0 -222px}.att_video{background-position:0 -75px}
+            .att_doc{background-position:0 -280px}.att_wall,.att_fwd{background-position:0 -194px}.att_gift{background-position:0 -105px}
+            .att_sticker{background-position:0 -362px;width:12px;height:12px}.att_link{background-position:0 -237px}.attb_link a span{color:#777!important}
+            .att_geo{background-position:0 -165px}.fwd{border:2px solid #C3D1E0;border-width:0 0 0 2px;margin-left:85px}.attachments{margin:5px;float:left}
+            .attachment_title{font-size:20px;}.hidden_ta_at{display:none}.main_wrapper{margin:auto;max-width:1000px}
+            </style>
             <style>${galleryCSS}</style>
             </head>
             <script>${galleryJS}</script>
@@ -233,7 +256,12 @@ async function message2tag(message, sender) {
             var fwd = message.fwd_messages[i];
             var u = await getUser(fwd.user_id);
             if (!u) {
-                u = {id: fwd.user_id, first_name: "Ошибка", last_name: `Профиля id${fwd.user_id}`, photo_100: "https://vk.com/images/deactivated_100.png?ava=1"}
+                u = {
+                    id: fwd.user_id,
+                    first_name: "Ошибка",
+                    last_name: `Профиля id${fwd.user_id}`,
+                    photo_100: "https://vk.com/images/deactivated_100.png?ava=1"
+                }
             }
             fwdDiv.appendChild(await message2tag(fwd, u));
         }
@@ -251,11 +279,15 @@ function maxRes(photo) {
             ans[0] = photo[f];
         }
     });
-    values.reverse().forEach(function (f) {
-        if (photo[f]) {
-            ans[1] = photo[f];
-        }
-    });
+    if (photo.photo_604) {
+        ans[1] = photo.photo_604;
+    } else {
+        values.reverse().forEach(function (f) {
+            if (photo[f]) {
+                ans[1] = photo[f];
+            }
+        });
+    }
     return ans;
 }
 
@@ -265,6 +297,7 @@ function generateAttachment(attachment) {
     ta.className = "hidden_ta_at";
     ta.innerText = JSON.stringify(attachment);
     div.appendChild(ta);
+    // div.className = 'att_' + attachment.type;
     if (attachment.type === 'photo') {
         // <a href="demo/images/4big.jpg" title="Caption for gallery item 1"><img src="demo/images/4small.jpg" alt="Gallery image 1" /></a>
         var gDiv = document.createElement('div');
@@ -275,9 +308,54 @@ function generateAttachment(attachment) {
 
         var img = document.createElement('img');
         img.src = maxRes(attachment[attachment.type])[1];
+        img.className = 'att_photo';
+        imgA.appendChild(img);
+        gDiv.appendChild(imgA);
+        div.appendChild(gDiv);
+    } else if (attachment.type == 'video') {
+        var gDiv = document.createElement('div');
+        gDiv.className = 'gallery';
+
+        var textB = document.createElement('b');
+        textB.innerText = `<полное видео не показано>`;
+        ta.className = '';
+
+        var imgA = document.createElement('a');
+        imgA.href = maxRes(attachment[attachment.type])[0];
+
+        var img = document.createElement('img');
+        img.src = maxRes(attachment[attachment.type])[1];
 
         imgA.appendChild(img);
         gDiv.appendChild(imgA);
+        div.appendChild(textB);
+        div.appendChild(gDiv);
+    } else if (attachment.type == 'audio') {
+        var gDiv = document.createElement('div');
+
+        var textB = document.createElement('b');
+        textB.innerText = attachment[attachment.type].artist;
+
+        var br = document.createElement('br');
+
+        var audio = document.createElement('audio');
+        audio.src = attachment[attachment.type].url;
+        audio.controls = 'controls';
+
+        gDiv.appendChild(textB);
+        gDiv.appendChild(br);
+        gDiv.appendChild(audio);
+
+        div.appendChild(gDiv);
+    } else if (attachment.type == 'doc') {
+        var gDiv = document.createElement('div');
+
+        var textA = document.createElement('a');
+        textA.innerText = attachment[attachment.type].title;
+        textA.href = attachment[attachment.type].url;
+
+        gDiv.appendChild(textA);
+
         div.appendChild(gDiv);
     } else {
         ta.className = '';

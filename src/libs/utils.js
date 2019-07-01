@@ -1,8 +1,9 @@
 import API from "./api";
-import { slugify } from 'transliteration';
+import { slugify } from "transliteration";
+import { capitalizeFirstLetter } from "./helper";
 
 var Analyzes = {
-	dialog: function (peerId, callback, statusFunction, peerName='') {
+	dialog: function (peerId, callback, statusFunction, peerName="") {
 		var isStoppedByUser = false,
 
 			setStatus = statusFunction,
@@ -87,7 +88,7 @@ var Analyzes = {
                 })
 
                 // saveAs(blob, "dialog" + peerId + ".json");
-                callback({'filename': "dialog" + peerId + "_" + slugify(peerName).replace(/-/g, "_") + ".json", data: jsonString});
+                callback({'filename': "dialog" + peerId + "_" + capitalizeFirstLetter(slugify(peerName).replace(/-/g, " ")).replace(/ /g, "_") + ".json", data: jsonString});
 			},
 			d2006 = 1138741200,
 			saver = {
@@ -134,7 +135,14 @@ var Analyzes = {
 									n: o.title,
 									z: o.description,
 									d: o.date - d2006,
-									s: o.duration
+									s: o.duration,
+									s: {
+										m: o.photo_2560,
+										s: o.photo_1280,
+										n: o.photo_807,
+										o: o.photo_604,
+										t: o.photo_130
+									}
 								};
 							case "audio":
 								return {
@@ -145,7 +153,8 @@ var Analyzes = {
 									n: o.title,
 									d: o.duration,
 									l: o.lyrics_id,
-									g: o.genre_id
+									g: o.genre_id,
+									url: o.url
 								};
 							case "doc":
 								return {
@@ -154,7 +163,8 @@ var Analyzes = {
 									i: o.id,
 									n: o.title,
 									e: o.ext,
-									s: o.size
+									s: o.size,
+									url: o.url
 								};
 							case "sticker":
 								return {
