@@ -300,31 +300,31 @@ function generateAttachment(attachment) {
     // div.className = 'att_' + attachment.type;
     if (attachment.type === 'photo') {
         // <a href="demo/images/4big.jpg" title="Caption for gallery item 1"><img src="demo/images/4small.jpg" alt="Gallery image 1" /></a>
-        var gDiv = document.createElement('div');
+        let gDiv = document.createElement('div');
         gDiv.className = 'gallery';
 
-        var imgA = document.createElement('a');
+        let imgA = document.createElement('a');
         imgA.href = maxRes(attachment[attachment.type])[0];
         imgA.className = 'download_photo_type';
         imgA.dataset.src = maxRes(attachment[attachment.type])[0];
-        var img = document.createElement('img');
+        let img = document.createElement('img');
         img.src = maxRes(attachment[attachment.type])[1];
         img.className = 'att_photo';
         imgA.appendChild(img);
         gDiv.appendChild(imgA);
         div.appendChild(gDiv);
     } else if (attachment.type == 'video') {
-        var gDiv = document.createElement('div');
+        let gDiv = document.createElement('div');
         gDiv.className = 'gallery';
 
-        var textB = document.createElement('b');
+        let textB = document.createElement('b');
         textB.innerText = `<полное видео не показано>`;
         ta.className = '';
 
-        var imgA = document.createElement('a');
+        let imgA = document.createElement('a');
         imgA.href = maxRes(attachment[attachment.type])[0];
 
-        var img = document.createElement('img');
+        let img = document.createElement('img');
         img.src = maxRes(attachment[attachment.type])[1];
 
         imgA.appendChild(img);
@@ -332,14 +332,14 @@ function generateAttachment(attachment) {
         div.appendChild(textB);
         div.appendChild(gDiv);
     } else if (attachment.type == 'audio') {
-        var gDiv = document.createElement('div');
+        let gDiv = document.createElement('div');
 
-        var textB = document.createElement('b');
+        let textB = document.createElement('b');
         textB.innerText = attachment[attachment.type].artist;
 
-        var br = document.createElement('br');
+        let br = document.createElement('br');
 
-        var audio = document.createElement('audio');
+        let audio = document.createElement('audio');
         audio.src = attachment[attachment.type].url;
         audio.dataset.src = attachment[attachment.type].url;
         if (attachment[attachment.type].url) {
@@ -353,9 +353,9 @@ function generateAttachment(attachment) {
 
         div.appendChild(gDiv);
     } else if (attachment.type == 'doc') {
-        var gDiv = document.createElement('div');
+        let gDiv = document.createElement('div');
 
-        var textA = document.createElement('a');
+        let textA = document.createElement('a');
         textA.innerText = attachment[attachment.type].title;
         textA.href = attachment[attachment.type].url;
 

@@ -4,15 +4,15 @@
       <v-card>
         <v-list subheader>
           <v-subheader>Выбрать чаты</v-subheader>
-          <!-- <v-list-tile>
+          <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>Выбрать диапазон</v-list-tile-title>
             </v-list-tile-content>
 
             <v-list-tile-action>
-              <v-text-field style="max-width: 100px;" v-model="chatRangeText"></v-text-field>
+              <v-text-field :rules="chatRangeTextRules" style="max-width: 190px;" v-model="chatRangeText"></v-text-field>
             </v-list-tile-action>
-          </v-list-tile> -->
+          </v-list-tile>
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>Выбрать все</v-list-tile-title>
@@ -22,6 +22,7 @@
               <v-checkbox color="green" v-model="allSelected"></v-checkbox>
             </v-list-tile-action>
           </v-list-tile>
+          
           <v-list-tile v-for="c in chats.slice(0, showChatsCount)" :key="c.peer_id" avatar>
             <v-list-tile-avatar>
               <img :src="c.peerInfo.photo_100">
@@ -44,6 +45,7 @@
               <v-checkbox v-model="notShowSelected"></v-checkbox>
             </v-list-tile-action>
           </v-list-tile>
+          
         </v-list>
       </v-card>
     </v-flex>
@@ -70,7 +72,7 @@
 </template>
 
 <script>
-import { declOfNum, checkActivationCode, getRanges } from "../libs/helper";
+import { declOfNum, checkActivationCode, getRanges, loadRanges } from "../libs/helper";
 
 export default {
   name: "ChatList",
@@ -84,10 +86,10 @@ export default {
       unlockDialog: false,
       chatRangeText: null,
       chatRangeTextRules: [
-        v => !!v || "Введите диапазон",
+        v => !!v || "введите диапазон",
         v =>
-          /^((\d+-\d+,?)|(\d+,?))+$/.test(v) ||
-          "Диапазон не валиден"
+          !!loadRanges(v, this.selectLast ? this.chats.length : this.showChatsCount) ||
+          "диапазон не валиден"
       ]
     };
   },
@@ -111,7 +113,6 @@ export default {
         }
       }
       this.chatRangeText = getRanges(selected).join(", ");
-      // console.log(getRanges(selected));
     }
   },
   created: function() {
@@ -131,7 +132,15 @@ export default {
       }
       this.chatsUpdated();
     },
-    chatRangeText: function () {}
+    chatRangeText: function (newV) {
+      var range = loadRanges(newV, this.selectLast ? this.chats.length : this.showChatsCount);
+      if (range) {
+        for (var i = 0; i < this.chats.length; i++) {
+          this.chats[i].selected = range[i];
+        }
+        this.$forceUpdate();
+      }
+    }
   },
   computed: {
     allSelected: {
