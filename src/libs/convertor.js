@@ -332,7 +332,6 @@ function generateAttachment(attachment) {
         div.appendChild(textB);
         div.appendChild(gDiv);
     } else if (attachment.type == 'audio') {
-        
         var gDiv = document.createElement('div');
 
         var textB = document.createElement('b');

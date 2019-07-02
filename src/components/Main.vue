@@ -62,7 +62,7 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex md8 xs12>
-          <ChatList v-bind:chats="chats"/>
+          <ChatList v-bind:chats="chats" />
         </v-flex>
         <v-flex md4 xs12>
           <v-card>
@@ -78,8 +78,32 @@
                 :items="['JSON', 'HTML']"
                 label="Тип файлов"
               ></v-select>
-              <br>
-
+              <br />
+              <div style="text-align: left;">
+                <a @click="attachmentsDownloadMenu = true">Скачать вложения?</a>
+              </div>
+              <v-dialog v-model="attachmentsDownloadMenu" width="700">
+                <v-card>
+                  <v-card-text>
+                    <p class="title">Скачать вложения</p>
+                    <p>Данная версия сайта не поддерживает выкачку вложений, она качает прямые ссылки, чего зачастую достаточно для сохранения данных.</p>
+                    <p><b>ОДНАКО</b>, если вам нужно именно сохранить вложения на диск, я разработал скрипт, который находит в скачанных HTML вложения и качает их.</p>
+                    <p>Скрипт python3 (соотвественно нужен интерпретатор python3 на компьютере).<br>
+                       Скрипт качает <b>только фото и аудио сообщения</b>.<br>
+                       Скрипт консольный, т.е. управляется через интерфейс командной строки.<br>
+                       Инструкция по использованию скрипта выдается при покупке.
+                    </p>
+                    <p>
+                      Цена скрипта
+                      <b>300 рублей</b>,<br>чтобы купить - свяжитесь со мной в Telegram -
+                      <a
+                        href="https://tglink.ru/zpix1"
+                      >@zpix1</a> или по почте
+                      <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>
+                    </p>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
               <v-btn
                 v-if="countSelected > 0 && !downloading"
                 color="success"
@@ -101,7 +125,7 @@
 import { saveAs } from "file-saver";
 import axios from "axios";
 import JSZip from "jszip";
-import { slugify } from 'transliteration';
+import { slugify } from "transliteration";
 
 import API from "../libs/api";
 import Analyzes from "../libs/utils";
@@ -126,11 +150,12 @@ export default {
       fileType: "HTML",
       chats: [],
       login: "",
-      password: ""
+      password: "",
+      attachmentsDownloadMenu: false
     };
   },
   created: function() {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       this.token = localStorage.getItem("pm_token");
       API.token = this.token;
     }
@@ -185,7 +210,7 @@ export default {
           API.uid = d[0].id;
           API.myself = d[0];
         },
-        (e) => {
+        e => {
           this.error = `Ошибка сети (${e})`;
           this.tokenUpdated();
         }
@@ -195,15 +220,15 @@ export default {
 
       for (var i = 0; i < 25; i++) {
         str.push(
-          `API.messages.getConversations({offset: ${i*40}, count:40, extended: 1, v:5.80})`
+          `API.messages.getConversations({offset: ${i *
+            40}, count:40, extended: 1, v:5.80})`
         );
       }
 
       API.loadVK(
         "execute",
         {
-          code:
-           "return[" + str.join(",") + "];"
+          code: "return[" + str.join(",") + "];"
         },
         data => {
           if (!data) {
@@ -234,7 +259,7 @@ export default {
           this.chats = ans;
           this.inittingStage = 3;
         },
-        (e) => {
+        e => {
           this.error = `Ошибка сети (${e})`;
           this.tokenUpdated();
         }
@@ -274,9 +299,7 @@ export default {
             let peerID = selectedChats[i].peer_id;
             if (peerID > 0) {
               this.reportProgress(
-                `Загрузка ${selectedChats[i].peerInfo.first_name} ${
-                  selectedChats[i].peerInfo.last_name
-                }`,
+                `Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`,
                 i + 1,
                 len
               );
@@ -284,9 +307,7 @@ export default {
                 peerID,
                 convertCallback,
                 this.reportDialogProgress,
-                `${selectedChats[i].peerInfo.first_name} ${
-                  selectedChats[i].peerInfo.last_name
-                }`
+                `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`
               );
             }
           } else {
@@ -303,7 +324,13 @@ export default {
               .then(content => {
                 saveAs(
                   content,
-                  `result_${capitalizeFirstLetter(slugify(this.myself.last_name))}_${capitalizeFirstLetter(slugify(this.myself.first_name))}_(id${this.myself.id})_${this.fileType}_${new Date(Date.now())
+                  `result_${capitalizeFirstLetter(
+                    slugify(this.myself.last_name)
+                  )}_${capitalizeFirstLetter(
+                    slugify(this.myself.first_name)
+                  )}_(id${this.myself.id})_${this.fileType}_${new Date(
+                    Date.now()
+                  )
                     .toLocaleString()
                     .replace(/, /g, "_")}.zip`
                 );
@@ -316,9 +343,7 @@ export default {
       var convertCallback = json => {
         if (this.fileType === "HTML") {
           this.reportProgress(
-            `Конвертация в HTML ${selectedChats[i].peerInfo.first_name} ${
-              selectedChats[i].peerInfo.last_name
-            }`,
+            `Конвертация в HTML ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`,
             i + 1,
             len
           );
@@ -326,9 +351,7 @@ export default {
         } else callback(json);
       };
       this.reportProgress(
-        `Загрузка ${selectedChats[i].peerInfo.first_name} ${
-          selectedChats[i].peerInfo.last_name
-        }`,
+        `Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`,
         i + 1,
         len
       );
@@ -336,9 +359,7 @@ export default {
         selectedChats[i].peer_id,
         convertCallback,
         this.reportDialogProgress,
-        `${selectedChats[i].peerInfo.first_name} ${
-          selectedChats[i].peerInfo.last_name
-        }`
+        `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`
       );
     }
   },
