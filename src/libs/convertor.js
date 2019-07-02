@@ -305,7 +305,8 @@ function generateAttachment(attachment) {
 
         var imgA = document.createElement('a');
         imgA.href = maxRes(attachment[attachment.type])[0];
-
+        imgA.className = 'download_photo_type';
+        imgA.dataset.src = maxRes(attachment[attachment.type])[0];
         var img = document.createElement('img');
         img.src = maxRes(attachment[attachment.type])[1];
         img.className = 'att_photo';
@@ -331,6 +332,7 @@ function generateAttachment(attachment) {
         div.appendChild(textB);
         div.appendChild(gDiv);
     } else if (attachment.type == 'audio') {
+        
         var gDiv = document.createElement('div');
 
         var textB = document.createElement('b');
@@ -340,6 +342,10 @@ function generateAttachment(attachment) {
 
         var audio = document.createElement('audio');
         audio.src = attachment[attachment.type].url;
+        audio.dataset.src = attachment[attachment.type].url;
+        if (attachment[attachment.type].url) {
+            audio.className = 'download_audio_message_type';
+        }
         audio.controls = 'controls';
 
         gDiv.appendChild(textB);
