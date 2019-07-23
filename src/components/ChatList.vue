@@ -10,7 +10,11 @@
             </v-list-tile-content>
 
             <v-list-tile-action>
-              <v-text-field :rules="chatRangeTextRules" style="max-width: 190px;" v-model="chatRangeText"></v-text-field>
+              <v-text-field
+                :rules="chatRangeTextRules"
+                style="max-width: 190px;"
+                v-model="chatRangeText"
+              ></v-text-field>
             </v-list-tile-action>
           </v-list-tile>
           <v-list-tile>
@@ -22,10 +26,10 @@
               <v-checkbox color="green" v-model="allSelected"></v-checkbox>
             </v-list-tile-action>
           </v-list-tile>
-          
+
           <v-list-tile v-for="c in chats.slice(0, showChatsCount)" :key="c.peer_id" avatar>
             <v-list-tile-avatar>
-              <img :src="c.peerInfo.photo_100">
+              <img :src="c.peerInfo.photo_100" />
             </v-list-tile-avatar>
 
             <v-list-tile-content>
@@ -36,16 +40,40 @@
               <v-checkbox v-model="c.selected"></v-checkbox>
             </v-list-tile-action>
           </v-list-tile>
+
           <v-list-tile v-if="chats.length > showChatsCount">
             <v-list-tile-content>
               <v-list-tile-title>И еще {{chats.length - showChatsCount}} {{declOfNum(chats.length - showChatsCount, ['чат', 'чата', 'чатов'])}}</v-list-tile-title>
             </v-list-tile-content>
-            <a v-if="!selectLast" @click="unlockDialog = true">разблокировать</a>
-            <v-list-tile-action v-if="selectLast" @click="chatsUpdated">
+
+            <v-btn color='primary' v-if="!selectLast" @click="unlockDialog = true">разблокировать</v-btn>
+
+            <v-btn color='info' v-if="selectLast" @click="showAll = !showAll"> {{ showAll ? 'свернуть': 'развернуть' }} </v-btn>
+
+            <!-- <v-list-tile-action v-if="selectLast" @click="chatsUpdated">
               <v-checkbox v-model="notShowSelected"></v-checkbox>
-            </v-list-tile-action>
+            </v-list-tile-action> -->
           </v-list-tile>
-          
+
+          <div v-if="(chats.length > showChatsCount) && (showAll)" transition="scale-transition">
+            <v-list-tile
+              v-for="c in chats.slice(showChatsCount, chats.length)"
+              :key="c.peer_id"
+              avatar
+            >
+              <v-list-tile-avatar>
+                <img :src="c.peerInfo.photo_100" />
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title>{{ c.peerInfo.first_name }} {{ c.peerInfo.last_name }}</v-list-tile-title>
+              </v-list-tile-content>
+
+              <v-list-tile-action @click="chatsUpdated">
+                <v-checkbox v-model="c.selected"></v-checkbox>
+              </v-list-tile-action>
+            </v-list-tile>
+          </div>
         </v-list>
       </v-card>
     </v-flex>
@@ -60,6 +88,7 @@
             <a href="https://tglink.ru/zpix1">@zpix1</a> или по почте
             <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>
           </p>
+          <p>Перед покупкой не забудьте прочесть информацию о сайте, возврат денег не предусмотрен.</p>
           <v-form>
             <v-text-field v-model="code" mask="####-####-####-####" label="Код активации"></v-text-field>
             <v-btn color="success" @click="checkCode">активировать</v-btn>
@@ -72,7 +101,12 @@
 </template>
 
 <script>
-import { declOfNum, checkActivationCode, getRanges, loadRanges } from "../libs/helper";
+import {
+  declOfNum,
+  checkActivationCode,
+  getRanges,
+  loadRanges
+} from "../libs/helper";
 
 export default {
   name: "ChatList",
@@ -82,14 +116,17 @@ export default {
       error: null,
       code: "",
       showChatsCount: 10,
+      showAll: false,
       selectLast: false,
       unlockDialog: false,
       chatRangeText: null,
       chatRangeTextRules: [
         v => !!v || "введите диапазон",
         v =>
-          !!loadRanges(v, this.selectLast ? this.chats.length : this.showChatsCount) ||
-          "диапазон не валиден"
+          !!loadRanges(
+            v,
+            this.selectLast ? this.chats.length : this.showChatsCount
+          ) || "диапазон не валиден"
       ]
     };
   },
@@ -123,7 +160,7 @@ export default {
     }
   },
   watch: {
-    chats: function () {
+    chats: function() {
       if (!this.selectLast) {
         for (let i = this.showChatsCount; i < this.chats.length; i++) {
           this.chats[i].selected = false;
@@ -132,8 +169,11 @@ export default {
       }
       this.chatsUpdated();
     },
-    chatRangeText: function (newV) {
-      var range = loadRanges(newV, this.selectLast ? this.chats.length : this.showChatsCount);
+    chatRangeText: function(newV) {
+      var range = loadRanges(
+        newV,
+        this.selectLast ? this.chats.length : this.showChatsCount
+      );
       if (range) {
         for (var i = 0; i < this.chats.length; i++) {
           this.chats[i].selected = range[i];
