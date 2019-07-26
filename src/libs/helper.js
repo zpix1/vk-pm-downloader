@@ -23,6 +23,7 @@ function getRanges(array) {
 function loadRanges(ranges, maxV) {
     // 0 - not selected
     // 1 - selected
+
     var resultRange = Array.apply(null, {
         length: maxV
     }).map(() => 0);

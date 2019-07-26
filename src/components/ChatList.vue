@@ -36,8 +36,8 @@
               <v-list-tile-title>{{ c.peerInfo.first_name }} {{ c.peerInfo.last_name }}</v-list-tile-title>
             </v-list-tile-content>
 
-            <v-chip v-if="c.type === 'group'">Группа</v-chip>
-            <v-chip v-if="c.type === 'chat'">Беседа</v-chip>
+            <v-chip @click="selectType('group')" v-if="c.type === 'group'">Группа</v-chip>
+            <v-chip @click="selectType('chat')"  v-if="c.type === 'chat'">Беседа</v-chip>
 
             <v-list-tile-action @click="chatsUpdated">
               <v-checkbox v-model="c.selected"></v-checkbox>
@@ -72,9 +72,9 @@
                 <v-list-tile-title>{{ c.peerInfo.first_name }} {{ c.peerInfo.last_name }}</v-list-tile-title>
               </v-list-tile-content>
 
-              <v-chip v-if="c.type === 'group'">Группа</v-chip>
-              <v-chip v-if="c.type === 'chat'">Беседа</v-chip>
-              
+              <v-chip @click="selectType('group')" v-if="c.type === 'group'">Группа</v-chip>
+              <v-chip @click="selectType('chat')"  v-if="c.type === 'chat'">Беседа</v-chip>
+
               <v-list-tile-action @click="chatsUpdated">
                 <v-checkbox v-model="c.selected"></v-checkbox>
               </v-list-tile-action>
@@ -153,6 +153,18 @@ export default {
       for (var i = 0; i < this.chats.length; i++) {
         if (this.chats[i].selected) {
           selected.push(i);
+        }
+      }
+      this.chatRangeText = getRanges(selected).join(", ");
+    },
+    selectType(type) {
+      var selected = [];
+      for (var i = 0; i < (this.selectLast ? this.chats.length : this.showChatsCount); i++) {
+        if (this.chats[i].type === type) {
+          selected.push(i);
+          this.chats[i].selected = true;
+        } else {
+          // this.chats[i].selected = false;
         }
       }
       this.chatRangeText = getRanges(selected).join(", ");
