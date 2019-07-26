@@ -88,10 +88,29 @@ var explainAttachments = function (a) {
                         url: i.url
                     }
                 };
+            case 4:
+                return {
+                    type: "sticker", sticker: {
+                        id: i.i
+                    }
+                };
+            case 5:
+                return {
+                    type: "gift", gift: {
+                        id: i.i
+                    }
+                };
+            case 6:
+            return {
+                type: "link", link: {
+                    id: i.i,
+                    value: i.v
+                }
+            };
             default:
                 return {
                     t: -1,
-                        s: i.type
+                    s: i.type
                 };
         }
     });
@@ -128,17 +147,31 @@ function reformatJSON(k, meta, my_id) {
 }
 
 var lru = {};
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 async function getUser(id) {
+    // sleep bc rps limit
     if (id in lru) {
         return lru[id];
+    } else if (id < 0) {
+        let a = (await API.aloadVK('groups.getById', {
+            group_ids: Math.abs(id),
+            fields: 'photo_100'
+        }))[0];
+        a.first_name = 'Группа';
+        a.last_name = a.name;
+        lru[id] = a;
+        await sleep(100);
+        return a;
     } else {
-        var a = await API.aloadVK('users.get', {
+        let a = (await API.aloadVK('users.get', {
             user_ids: id,
             fields: 'photo_100'
-        });
-        lru[id] = a[0];
-        return a[0];
+        }))[0];
+        lru[id] = a;
+        await sleep(100);
+        return a;
     }
 }
 
@@ -197,6 +230,7 @@ async function json2html(object, my_id, callback) {
     html.getElementsByTagName("body")[0].appendChild(galleryScript);
     var outerDiv = document.createElement('div');
     outerDiv.appendChild(html);
+
     callback({
         data: outerDiv.innerHTML,
         filename: object.filename.replace('.json', '.html')
@@ -267,8 +301,7 @@ async function message2tag(message, sender) {
         }
         div.appendChild(fwdDiv);
     }
-
-    return div
+    return div;
 }
 
 function maxRes(photo) {

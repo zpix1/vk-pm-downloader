@@ -246,15 +246,26 @@ export default {
             this.tokenUpdated();
             return;
           }
+          // ans.push({
+          //   peer_id: pid,
+          //   last_message: d.items[i].last_message,
+          //   peerInfo: d.profiles[j],
+          //   selected: true
+          // });
+
           let ans = [];
+          let gids = new Set();
           for (let idx = 0; idx < data.length; idx++) {
             let d = data[idx];
             for (let i = 0; i < d.items.length; i++) {
               let pid = d.items[i].conversation.peer.id;
               for (let j = 0; j < d.profiles.length; j++) {
-                if (d.profiles[j].id < 0) break;
+                if (d.profiles[j].id < 0) {
+                  break;
+                }
                 if (d.profiles[j].id === pid) {
                   ans.push({
+                    type: "user",
                     peer_id: pid,
                     last_message: d.items[i].last_message,
                     peerInfo: d.profiles[j],
@@ -262,6 +273,28 @@ export default {
                   });
                   d.items[i].peerInfo = d.profiles[j];
                   break;
+                }
+              }
+            }
+
+            if (d.groups) {
+              for (let i = 0; i < d.groups.length; i++) {
+                if (!gids.has(d.groups[i].id)) {
+                  gids.add(d.groups[i].id);
+                  let info = {
+                    id: -d.groups[i].id,
+                    first_name: "Группа",
+                    last_name: d.groups[i].name,
+                    photo_100: d.groups[i].photo_100,
+                    photo_50: d.groups[i].photo_50
+                  };
+                  ans.push({
+                    type: "group",
+                    peer_id: -d.groups[i].id,
+                    last_message: "",
+                    peerInfo: info,
+                    selected: true
+                  });
                 }
               }
             }
@@ -307,19 +340,17 @@ export default {
           i++;
           if (i < len) {
             let peerID = selectedChats[i].peer_id;
-            if (peerID > 0) {
-              this.reportProgress(
-                `Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`,
-                i + 1,
-                len
-              );
-              Analyzes.dialog(
-                peerID,
-                convertCallback,
-                this.reportDialogProgress,
-                `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`
-              );
-            }
+            this.reportProgress(
+              `Загрузка ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`,
+              i + 1,
+              len
+            );
+            Analyzes.dialog(
+              peerID,
+              convertCallback,
+              this.reportDialogProgress,
+              `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`
+            );
           } else {
             this.reportProgress("Создание zip архива", 0, 0);
             zip
@@ -348,7 +379,7 @@ export default {
                 this.downloading = false;
               });
           }
-        }, 1000);
+        }, Math.random * 750 + 500);
       };
       var convertCallback = json => {
         if (this.fileType === "HTML") {

@@ -30,6 +30,10 @@ API.aloadVK = async function (method, data) {
             return data;
         }
     }).promise;
+    if (r.error) {
+        // eslint-disable-next-line
+        console.error(url,r.error);
+    }
     return r.response;
 }
 export default API;

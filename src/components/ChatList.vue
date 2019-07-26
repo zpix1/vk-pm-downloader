@@ -84,7 +84,7 @@
           <p>Сейчас VK PM Downloader может загружать максимум {{ showChatsCount }} чатов, однако вы можете разблокировать его, чтобы загружать до 1000 чатов.</p>
           <p>
             Разблокировка стоит
-            <b>150 рублей</b>, чтобы купить - свяжитесь со мной в Telegram -
+            <b>250 рублей</b>, чтобы купить - свяжитесь со мной в Telegram -
             <a href="https://tglink.ru/zpix1">@zpix1</a> или по почте
             <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>
           </p>
