@@ -272,8 +272,8 @@ export default {
                   if (-d.groups[j].id === conv.peer.id) {
                     let info = {
                       id: -d.groups[j].id,
-                      first_name: "Группа",
-                      last_name: d.groups[j].name,
+                      last_name: "",
+                      first_name: d.groups[j].name,
                       photo_100: d.groups[j].photo_100,
                       photo_50: d.groups[j].photo_50
                     };
@@ -291,8 +291,8 @@ export default {
               } else if (conv.peer.type === "chat") {
                 let info = {
                   id: conv.peer.id,
-                  first_name: "Беседа",
-                  last_name: conv.chat_settings.title,
+                  last_name: "",
+                  first_name: conv.chat_settings.title,
                   photo_100: conv.chat_settings.photo
                     ? conv.chat_settings.photo.photo_100
                     : "https://vk.com/images/camera_100.png?ava=1",

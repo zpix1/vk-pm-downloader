@@ -36,6 +36,9 @@
               <v-list-tile-title>{{ c.peerInfo.first_name }} {{ c.peerInfo.last_name }}</v-list-tile-title>
             </v-list-tile-content>
 
+            <v-chip v-if="c.type === 'group'">Группа</v-chip>
+            <v-chip v-if="c.type === 'chat'">Беседа</v-chip>
+
             <v-list-tile-action @click="chatsUpdated">
               <v-checkbox v-model="c.selected"></v-checkbox>
             </v-list-tile-action>
@@ -69,6 +72,9 @@
                 <v-list-tile-title>{{ c.peerInfo.first_name }} {{ c.peerInfo.last_name }}</v-list-tile-title>
               </v-list-tile-content>
 
+              <v-chip v-if="c.type === 'group'">Группа</v-chip>
+              <v-chip v-if="c.type === 'chat'">Беседа</v-chip>
+              
               <v-list-tile-action @click="chatsUpdated">
                 <v-checkbox v-model="c.selected"></v-checkbox>
               </v-list-tile-action>
