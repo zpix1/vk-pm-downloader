@@ -191,10 +191,11 @@ async function json2html(object, my_id, callback) {
     h1.innerText = "PM Downloader // 2019.06";
     div.appendChild(h1);
     for (let i = 0; i < newData.length; i++) {
+        console.log(newData[i])
         if (newData[i].out)
             div.appendChild((await message2tag(newData[i], myself)))
         else
-            div.appendChild((await message2tag(newData[i], data.meta)))
+            div.appendChild((await message2tag(newData[i], (await getUser(newData[i].from_id)))))
     }
     // Create a full page
     var html = document.createElement('html');
@@ -238,6 +239,7 @@ async function json2html(object, my_id, callback) {
 }
 
 async function message2tag(message, sender) {
+    console.log(sender);
     var name = `${sender.first_name} ${sender.last_name}`;
 
     var div = document.createElement("div");
