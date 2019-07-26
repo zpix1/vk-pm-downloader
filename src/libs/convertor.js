@@ -109,8 +109,8 @@ var explainAttachments = function (a) {
             };
             default:
                 return {
-                    t: -1,
-                    s: i.type
+                    type: -1,
+                    value: i
                 };
         }
     });
@@ -191,7 +191,6 @@ async function json2html(object, my_id, callback) {
     h1.innerText = "PM Downloader // 2019.06";
     div.appendChild(h1);
     for (let i = 0; i < newData.length; i++) {
-        console.log(newData[i])
         if (newData[i].out)
             div.appendChild((await message2tag(newData[i], myself)))
         else
@@ -239,7 +238,6 @@ async function json2html(object, my_id, callback) {
 }
 
 async function message2tag(message, sender) {
-    console.log(sender);
     var name = `${sender.first_name} ${sender.last_name}`;
 
     var div = document.createElement("div");

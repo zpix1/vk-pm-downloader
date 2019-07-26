@@ -246,12 +246,6 @@ export default {
             this.tokenUpdated();
             return;
           }
-          // ans.push({
-          //   peer_id: pid,
-          //   last_message: d.items[i].last_message,
-          //   peerInfo: d.profiles[j],
-          //   selected: true
-          // });
 
           let ans = [];
           for (let idx = 0; idx < data.length; idx++) {
@@ -259,7 +253,7 @@ export default {
             for (let i = 0; i < d.items.length; i++) {
               let pid = d.items[i].conversation.peer.id;
               let conv = d.items[i].conversation;
-              if (conv.peer.type === "user1") {
+              if (conv.peer.type === "user") {
                 for (let j = 0; j < d.profiles.length; j++) {
                   if (d.profiles[j].id === pid) {
                     ans.push({
@@ -273,7 +267,7 @@ export default {
                     break;
                   }
                 }
-              } else if (conv.peer.type === "group1") {
+              } else if (conv.peer.type === "group") {
                 for (let j = 0; j < d.groups.length; j++) {
                   if (-d.groups[j].id === conv.peer.id) {
                     let info = {
@@ -299,8 +293,12 @@ export default {
                   id: conv.peer.id,
                   first_name: "Беседа",
                   last_name: conv.chat_settings.title,
-                  photo_100: conv.chat_settings.photo ? conv.chat_settings.photo.photo_100 : 'https://vk.com/images/camera_100.png?ava=1',
-                  photo_50: conv.chat_settings.photo ? conv.chat_settings.photo.photo_50 : 'https://vk.com/images/camera_50.png?ava=1'
+                  photo_100: conv.chat_settings.photo
+                    ? conv.chat_settings.photo.photo_100
+                    : "https://vk.com/images/camera_100.png?ava=1",
+                  photo_50: conv.chat_settings.photo
+                    ? conv.chat_settings.photo.photo_50
+                    : "https://vk.com/images/camera_50.png?ava=1"
                 };
                 ans.push({
                   type: "chat",
@@ -309,61 +307,26 @@ export default {
                   peerInfo: info,
                   selected: true
                 });
-                  // if (-d.groups[j].id === conv.peer.id) {
-                  //   let info = {
-                  //     id: -d.groups[j].id,
-                  //     first_name: "Группа",
-                  //     last_name: d.groups[j].name,
-                  //     photo_100: d.groups[j].photo_100,
-                  //     photo_50: d.groups[j].photo_50
-                  //   };
-                  //   ans.push({
-                  //     type: "user",
-                  //     peer_id: pid,
-                  //     last_message: d.items[i].last_message,
-                  //     peerInfo: info,
-                  //     selected: true
-                  //   });
-                  //   d.items[i].peerInfo = info;
-                  //   break;
-                  // }
+                // if (-d.groups[j].id === conv.peer.id) {
+                //   let info = {
+                //     id: -d.groups[j].id,
+                //     first_name: "Группа",
+                //     last_name: d.groups[j].name,
+                //     photo_100: d.groups[j].photo_100,
+                //     photo_50: d.groups[j].photo_50
+                //   };
+                //   ans.push({
+                //     type: "user",
+                //     peer_id: pid,
+                //     last_message: d.items[i].last_message,
+                //     peerInfo: info,
+                //     selected: true
+                //   });
+                //   d.items[i].peerInfo = info;
+                //   break;
+                // }
               }
-              // for (let j = 0; j < d.profiles.length; j++) {
-              //   if (d.profiles[j].id === pid) {
-              //     ans.push({
-              //       type: "user",
-              //       peer_id: pid,
-              //       last_message: d.items[i].last_message,
-              //       peerInfo: d.profiles[j],
-              //       selected: true
-              //     });
-              //     d.items[i].peerInfo = d.profiles[j];
-              //     break;
-              //   }
-              // }
             }
-            // Groups
-            // if (d.groups) {
-            //   for (let i = 0; i < d.groups.length; i++) {
-            //     if (!gids.has(d.groups[i].id)) {
-            //       gids.add(d.groups[i].id);
-            // let info = {
-            //   id: -d.groups[i].id,
-            //   first_name: "Группа",
-            //   last_name: d.groups[i].name,
-            //   photo_100: d.groups[i].photo_100,
-            //   photo_50: d.groups[i].photo_50
-            // };
-            //       ans.push({
-            //         type: "group",
-            //         peer_id: -d.groups[i].id,
-            //         last_message: "",
-            //         peerInfo: info,
-            //         selected: true
-            //       });
-            //     }
-            //   }
-            // }
           }
           this.chats = ans;
           this.inittingStage = 3;
