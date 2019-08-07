@@ -1,10 +1,10 @@
 {
   "name": "pm_downloader",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && rm dist/js/*.map",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "axios-jsonp": "^1.0.2",
     "core-js": "^2.6.5",
     "file-saver": "^2.0.2",
+    "js-sha512": "^0.8.0",
     "jsonp": "^0.2.1",
     "jsonp-promise": "^0.1.2",
     "jszip": "^3.2.1",

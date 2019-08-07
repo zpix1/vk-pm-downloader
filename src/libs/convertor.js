@@ -101,16 +101,16 @@ var explainAttachments = function (a) {
                     }
                 };
             case 6:
-            return {
-                type: "link", link: {
-                    id: i.i,
-                    value: i.v
-                }
-            };
+                return {
+                    type: "link", link: {
+                        id: i.i,
+                        value: i.v
+                    }
+                };
             default:
                 return {
                     type: -1,
-                    value: i
+                        value: i
                 };
         }
     });
@@ -147,31 +147,49 @@ function reformatJSON(k, meta, my_id) {
 }
 
 var lru = {};
+
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 async function getUser(id) {
-    // sleep bc rps limit
     if (id in lru) {
         return lru[id];
     } else if (id < 0) {
-        let a = (await API.aloadVK('groups.getById', {
+        let result = (await API.aloadVK('groups.getById', {
             group_ids: Math.abs(id),
             fields: 'photo_100'
-        }))[0];
-        a.first_name = 'Группа';
-        a.last_name = a.name;
-        lru[id] = a;
+        }));
+
+        if (result.error_code == 6) {
+            // eslint-disable-next-line
+            console.error('Too many rps, retry in 2 seconds;');
+            await sleep(2000);
+            return getUser(id);
+        }
+        result = result[0];
+
+        result.first_name = 'Группа';
+        result.last_name = result.name;
+        lru[id] = result;
         await sleep(100);
-        return a;
+        return result;
     } else {
-        let a = (await API.aloadVK('users.get', {
+        let result = (await API.aloadVK('users.get', {
             user_ids: id,
             fields: 'photo_100'
-        }))[0];
-        lru[id] = a;
+        }));
+
+        if (result.error_code == 6) {
+            // eslint-disable-next-line
+            console.error('Too many rps, retry in 2 seconds;');
+            await sleep(2000);
+            return getUser(id);
+        }
+        result = result[0];
+
+        lru[id] = result;
         await sleep(100);
-        return a;
+        return result;
     }
 }
 
@@ -188,7 +206,7 @@ async function json2html(object, my_id, callback) {
     div.className = "messages round_upic main_wrapper";
 
     var h1 = document.createElement("h1");
-    h1.innerText = "PM Downloader // 2019.06";
+    h1.innerText = `PM Downloader v${process.env.VERSION}`;
     div.appendChild(h1);
     for (let i = 0; i < newData.length; i++) {
         if (newData[i].out)
@@ -203,7 +221,7 @@ async function json2html(object, my_id, callback) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            <title>PM Downloader ${object.filename.replace('.json', '.html')}</title>
+            <title>PM Downloader v${process.env.VERSION} ${object.filename.replace('.json', '.html')}</title>
             <style>
             h4{font-family:inherit;font-weight:500;line-height:1.1;color:inherit;margin-top:10px;margin-bottom:10px;font-size:18px}
             body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#fff;margin:0}

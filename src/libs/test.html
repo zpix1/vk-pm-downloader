@@ -41,28 +41,18 @@
         return true;
     }
 
-    function generateActivationCodes() {
-        var pArray = [];
-        for (var i = 1000; i < 10000; i++) {
-            if (isPrime(i)) {
-                pArray.push(i);
-            }
-        }
-        pArray = shuffle(pArray);
-        for (var i = 0; i < pArray.length; i += 4) {
-            var abcd = pArray.slice(i, i + 4);
-            if (abcd.length != 4)
-                break;
+    function randint(min, max) {
+        let rand = min - 0.5 + Math.random() * (max - min + 1);
+        return Math.round(rand);
+    }
 
-            abcd.sort(function (a, b) {
-                return a-b
-            });
-            
-            var a = abcd[0];
-            var b = abcd[1];
-            var c = abcd[2];
-            var d = abcd[3];
-            console.log(`${b}-${d}-${c}-${a}`);
+    function generateActivationCodes() {
+        for (let i = 0; i < 1000; i++) {
+            let a = randint(1000, 9999);
+            let b = randint(1000, 9999);
+            let c = randint(1000, 9999);
+            let d = randint(1000, 9999);
+            console.log(`${a}-${b}-${c}-${d}`);
         }
     }
 

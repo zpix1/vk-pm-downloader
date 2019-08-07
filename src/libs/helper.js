@@ -1,3 +1,8 @@
+import sha512 from 'js-sha512';
+import encodes from '../../codes_stuff/encrypted.js'
+
+let OptEncodes = new Set(encodes);
+
 function declOfNum(number, titles) {
     let cases = [2, 0, 1, 1, 1, 2];
     return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
@@ -81,7 +86,14 @@ function isPrime(num) {
 }
 
 function checkActivationCode(code) {
+
     if (!code) {
+        return false;
+    }
+    
+    if (OptEncodes.has(sha512(code))) {
+        return true;
+    } else {
         return false;
     }
 
