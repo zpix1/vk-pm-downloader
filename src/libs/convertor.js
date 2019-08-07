@@ -160,9 +160,9 @@ async function getUser(id) {
             fields: 'photo_100'
         }));
 
-        if (result.error_code == 6) {
+        if (result.error_code) {
             // eslint-disable-next-line
-            console.error('Too many rps, retry in 2 seconds;');
+            console.error(result.error_msg, "retry in 2 seconds");
             await sleep(2000);
             return getUser(id);
         }
@@ -179,9 +179,9 @@ async function getUser(id) {
             fields: 'photo_100'
         }));
 
-        if (result.error_code == 6) {
+        if (result.error_code) {
             // eslint-disable-next-line
-            console.error('Too many rps, retry in 2 seconds;');
+            console.error(result.error_msg, "retry in 2 seconds");
             await sleep(2000);
             return getUser(id);
         }

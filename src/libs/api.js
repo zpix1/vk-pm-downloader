@@ -12,6 +12,10 @@ API.loadVK = function (method, data, callback, errorCallback = console.error) {
     let url = `https://api.vk.com/method/${method}?access_token=${this.token}&v=5.1&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;
     // eslint-disable-next-line
     jsonp(url, null, (error, data) => {
+        if (data.error) {
+            // eslint-disable-next-line
+            console.error('load', url, data.error);
+        }
         if (error) {
             errorCallback(error);
         } else {
@@ -26,13 +30,15 @@ API.aloadVK = async function (method, data) {
         if (error) {
             // eslint-disable-next-line
             console.error(error);
+            return error;
         } else {
             return data;
         }
     }).promise;
     if (r.error) {
         // eslint-disable-next-line
-        console.error(url,r.error);
+        console.error('aload', url, r.error);
+        return r.error;
     }
     return r.response;
 }

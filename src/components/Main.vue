@@ -408,7 +408,7 @@ export default {
                 this.downloading = false;
               });
           }
-        }, Math.random * 750 + 500);
+        }, Math.random * 1000 + 500);
       };
       var convertCallback = json => {
         if (this.fileType === "HTML") {

@@ -57,7 +57,7 @@ var Analyzes = {
 						if ((data = saveMessages(data)).isFull) {
 							setTimeout(function () {
 								start(offset + (25 * 200))
-							}, 300);
+							}, 500);
 						} else {
 							showStat();
 						}
