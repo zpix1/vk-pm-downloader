@@ -140,6 +140,7 @@ import API from "../libs/api";
 import Analyzes from "../libs/utils";
 import Convertor from "../libs/convertor";
 import { capitalizeFirstLetter } from "../libs/helper";
+import { timeouts } from "../libs/constant";
 
 import ChatList from "./ChatList";
 import About from "./About";
@@ -408,7 +409,7 @@ export default {
                 this.downloading = false;
               });
           }
-        }, Math.random * 1000 + 500);
+        }, timeouts.mainLoop);
       };
       var convertCallback = json => {
         if (this.fileType === "HTML") {

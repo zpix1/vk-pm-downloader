@@ -3,7 +3,9 @@ import {
     galleryJS,
     galleryCSS
 } from './gallery';
-
+import {
+    timeouts
+} from "./constant";
 var Convertor = {}
 Convertor.API = API;
 var d2006 = 1138741200;
@@ -163,7 +165,7 @@ async function getUser(id) {
         if (result.error_code) {
             // eslint-disable-next-line
             console.error(result.error_msg, "retry in 2 seconds");
-            await sleep(2000);
+            await sleep(timeouts.retry);
             return getUser(id);
         }
         result = result[0];
@@ -171,7 +173,7 @@ async function getUser(id) {
         result.first_name = 'Группа';
         result.last_name = result.name;
         lru[id] = result;
-        await sleep(100);
+        await sleep(timeouts.getUser);
         return result;
     } else {
         let result = (await API.aloadVK('users.get', {
@@ -182,13 +184,13 @@ async function getUser(id) {
         if (result.error_code) {
             // eslint-disable-next-line
             console.error(result.error_msg, "retry in 2 seconds");
-            await sleep(2000);
+            await sleep(timeouts.retry);
             return getUser(id);
         }
         result = result[0];
 
         lru[id] = result;
-        await sleep(100);
+        await sleep(timeouts.getUser);
         return result;
     }
 }

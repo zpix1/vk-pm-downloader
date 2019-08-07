@@ -5,6 +5,10 @@ import {
 import {
 	capitalizeFirstLetter
 } from "./helper";
+import {
+	timeouts
+} from "./constant";
+
 
 var Analyzes = {
 	dialog: function (peerId, callback, statusFunction, peerName = "") {
@@ -57,7 +61,7 @@ var Analyzes = {
 						if ((data = saveMessages(data)).isFull) {
 							setTimeout(function () {
 								start(offset + (25 * 200))
-							}, 500);
+							}, timeouts.inUtils);
 						} else {
 							showStat();
 						}
