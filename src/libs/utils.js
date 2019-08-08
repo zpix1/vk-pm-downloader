@@ -9,7 +9,6 @@ import {
 	timeouts
 } from "./constant";
 
-
 var Analyzes = {
 	dialog: function (peerId, callback, statusFunction, peerName = "") {
 		var isStoppedByUser = false,
@@ -41,6 +40,8 @@ var Analyzes = {
 			dialogInfo,
 
 			saveInfo = function (result) {
+
+
 				dialogInfo = {
 					user: result.u,
 					count: result.m

@@ -1,5 +1,6 @@
 import sha512 from 'js-sha512';
-import encodes from '../../codes_stuff/encrypted.js'
+import salt from '../../codes_stuff/salt.js';
+import encodes from '../../codes_stuff/encrypted.js';
 
 let OptEncodes = new Set(encodes);
 
@@ -91,7 +92,7 @@ function checkActivationCode(code) {
         return false;
     }
     
-    if (OptEncodes.has(sha512(code))) {
+    if (OptEncodes.has(sha512(code + salt))) {
         return true;
     } else {
         return false;

@@ -144,6 +144,9 @@ export default {
         localStorage.setItem("pm_activation_code", this.code);
         this.error = null;
         this.unlockDialog = false;
+
+        
+
       } else {
         this.error = "Введенный код не валиден";
       }
