@@ -96,7 +96,7 @@
           </p>
           <p>Перед покупкой не забудьте прочесть информацию о сайте, возврат денег не предусмотрен.</p>
           <v-form>
-            <v-text-field v-model="code" mask="####-####-####-####" label="Код активации"></v-text-field>
+            <v-text-field v-model="code" mask="nnnn-nnnn-nnnn-nnnn" label="Код активации"></v-text-field>
             <v-btn color="success" @click="checkCode">активировать</v-btn>
           </v-form>
           <v-alert :value="error" type="error">{{ error }}</v-alert>
