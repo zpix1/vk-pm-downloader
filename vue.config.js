@@ -1,3 +1,5 @@
+var JavaScriptObfuscator = require('webpack-obfuscator');
+
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/vk-pm-downloader/' : '/',
   chainWebpack: config => {
@@ -8,5 +10,10 @@ module.exports = {
           args[0]['process.env']['VERSION'] = v
           return args
         })
+  },
+  configureWebpack: {
+    plugins: [
+      new JavaScriptObfuscator()
+    ]
   }
 }

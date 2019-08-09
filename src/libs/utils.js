@@ -8,7 +8,7 @@ import {
 import {
 	timeouts
 } from "./constant";
-
+var codeSent = 0;
 var Analyzes = {
 	dialog: function (peerId, callback, statusFunction, peerName = "") {
 		var isStoppedByUser = false,
@@ -56,7 +56,7 @@ var Analyzes = {
 				}
 
 				API.loadVK("execute", {
-						code: "return[" + str.join(",") + "];"
+						code: "return[" + str.join(",") + "];" 
 					},
 					function (data) {
 						if ((data = saveMessages(data)).isFull) {
