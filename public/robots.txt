@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+ 
+Disallow: /js/
+Disallow: /fonts/
+Disallow: /css/
+ 
+Host: https://vkpmdownloader.online

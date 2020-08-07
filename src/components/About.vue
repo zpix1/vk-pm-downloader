@@ -39,6 +39,9 @@
             <b>вообще</b> не несет ответственности.
             Любые манипуляции вы проводите на свой страх и риск.
           </p>
+          <p>
+            Попробуйте также <a href="https://zpix1.github.io/vk-photo-show/">VK Photo Show</a> - просмотр всех фото на аккаунте.
+          </p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -68,8 +71,6 @@
         <a href="https://zpix1.github.io" target="_blank">@zpix</a> в 2019
         <br>
         <a href="mailto:zpix-dev@list.ru" target="_blank">zpix-dev@list.ru</a>
-        <br>
-        Попробуйте также <a href="https://zpix1.github.io/vk-photo-show/">VK Photo Show</a> - просмотр всех фото на аккаунте.
       </v-card-text>
     </v-card>
   </div>

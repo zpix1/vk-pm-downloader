@@ -1,7 +1,7 @@
 var JavaScriptObfuscator = require('webpack-obfuscator');
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/vk-pm-downloader' : '/',
   chainWebpack: config => {
     config
       .plugin('define')

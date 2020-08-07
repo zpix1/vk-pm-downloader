@@ -9,12 +9,19 @@
     <meta name="keywords" content="ВК, скачать, переписка, загрузить, сообщения, архив">
 
     <link rel="icon" href="<%= BASE_URL %>favicon.jpg">
-    <title>VK PM Downloader</title>
+    <title>VK PM Downloader | Скачать всю переписку ВК</title>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but VK PM Downloader doesn't work properly without JavaScript enabled. Please enable it to continue. (Включите JavaScript)</strong>
     </noscript>
+    <script>
+      if (window.location.hostname === 'vkpmdownloader.online') {
+        if (confirm('К сожалению, данный адрес уже не поддерживается. Сайт переехал на https://zpix1.github.io/vk-pm-downloader. Перейти?')) {
+          location.href = 'https://zpix1.github.io/vk-pm-downloader';
+        }
+      }
+    </script>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
