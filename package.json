@@ -1,6 +1,6 @@
 {
   "name": "pm_downloader",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -30,7 +30,7 @@
     "material-design-icons-iconfont": "^5.0.1",
     "obfuscator-loader": "^1.1.2",
     "vue-template-compiler": "^2.6.10",
-    "webpack-obfuscator": "^0.18.3"
+    "webpack-obfuscator": "^0.18.8"
   },
   "eslintConfig": {
     "root": true,

@@ -19,9 +19,9 @@ var Analyzes = {
 				setStatus("Инициализация", 0, 1);
 				let code = '';
 				if (peerId < 0) {
-					code = "var o=%o;return{u:API.groups.getById({group_ids:o,fields:\"photo_100\",v:5.2})[0],m:API.messages.getHistory({user_id:-o,v:5.2}).count};";
+					code = "var o=%o;return{u:API.groups.getById({group_ids:o,fields:\"photo_100\",v:5.21})[0],m:API.messages.getHistory({user_id:-o,v:5.21}).count};";
 				} else {
-					code = "var o=%o;return{u:API.users.get({user_ids:o,fields:\"photo_100,online,first_name_ins,last_name_ins\",v:5.2})[0],m:API.messages.getHistory({user_id:o,v:5.2}).count};";
+					code = "var o=%o;return{u:API.users.get({user_ids:o,fields:\"photo_100,online,first_name_ins,last_name_ins\",v:5.21})[0],m:API.messages.getHistory({user_id:o,v:5.21}).count};";
 				}
 				API.loadVK("execute", {
 					code: (
@@ -52,7 +52,7 @@ var Analyzes = {
 				if (offset === false || isStoppedByUser) return;
 				var str = [];
 				for (var i = 0, l = 25; i < l; ++i) {
-					str.push("API.messages.getHistory({user_id:" + peerId + ",v:5.2,offset:" + (offset + (i * 200)) + ",count:200}).items");
+					str.push("API.messages.getHistory({user_id:" + peerId + ",v:5.21,offset:" + (offset + (i * 200)) + ",count:200}).items");
 				}
 
 				API.loadVK("execute", {
