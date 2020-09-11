@@ -1,7 +1,7 @@
 <template>
   <div class="text-xs-center wrapper">
     <div>
-      <v-dialog v-model="dialog" width="700">
+      <v-dialog v-model="logpassDialog" width="700">
         <v-card>
           <v-card-title class="headline" primary-title>Вход по паролю</v-card-title>
           <v-card-text>
@@ -10,6 +10,26 @@
               <v-text-field v-model="password" type="password" label="Пароль"></v-text-field>
               <v-btn color="success" @click="passwordLogin">Войти</v-btn>
             </v-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="tokenDialog" width="700">
+        <v-card>
+          <v-card-title class="headline" primary-title>Получите токен</v-card-title>
+          <v-card-text>
+            <!-- <p class="title">Получите токен</p> -->
+            <ul>
+            <li>через сайт <a href="https://vkhost.github.io/">vkhost.github.io</a> (выберите "Настройки", а там отметьте пункты "Сообщения" и "Доступ в любое время") </li>
+            <li> напрямую по ссылке <a href="https://oauth.vk.com/authorize?client_id=6121396&scope=69632&redirect_uri=https://oauth.vk.com/blank.html&display=page&response_type=token&revoke=1">
+            oauth.vk.com</a> </li>
+
+            </ul>  
+            Затем выделите токен из результирующей ссылки (начинается с https://oauth.vk.com/blank.html)
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" flat @click="tokenDialog = false">Закрыть</v-btn>
+            </v-card-actions>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -31,7 +51,8 @@
                         required
                         style="max-width: 300px;padding-bottom:0px; margin-bottom:0px;"
                       ></v-text-field>
-                      <a @click="dialog = true">или вход через логин и пароль</a>
+                      <a @click="logpassDialog = true">или вход через логин и пароль</a><br>
+                      <a @click="tokenDialog = true">или получите токен вручную</a>
                     </div>
                     <v-text-field
                       v-bind:value="(myself && myself.first_name + ' ' + myself.last_name) || ''"
@@ -150,7 +171,8 @@ export default {
   name: "Main",
   data: function() {
     return {
-      dialog: false,
+      tokenDialog: false,
+      logpassDialog: false,
       token: null,
       myself: null,
       currentDialogProgress: 0,
@@ -169,13 +191,15 @@ export default {
   created: function() {
     if (process.env.NODE_ENV === "development") {
       this.token = localStorage.getItem("pm_token");
-      API.token = this.token;
-      this.init();
+      if (this.token) {
+        API.token = this.token;
+        this.init();
+      }
     }
   },
   methods: {
     passwordLogin: function() {
-      this.dialog = false;
+      this.logpassDialog = false;
       this.inittingStage = 1;
       axios
         .post("https://apidog.ru/api/v2/apidog.authorize", {
