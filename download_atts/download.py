@@ -4,12 +4,13 @@ import argparse
 import os
 import asyncio
 import random
-
+from time import sleep
 from bs4 import BeautifulSoup 
 import requests
 import aiohttp
 
 parser = argparse.ArgumentParser(description='Скачать все вложения из файлов VK PM Downloader')
+parser.add_argument('--wait', type=int, help='Задержка между отдельными запросами (в мс)', default=0)
 sp = parser.add_subparsers()
 
 file_p = sp.add_parser('file', help='Скачать у одного файла')
@@ -25,12 +26,26 @@ dir_p.add_argument('--download', choices=['photo', 'audio', 'all'], default='all
 
 args = parser.parse_args()
 
-async def download_to(path, url, session):
-    async with session.get(url) as response:
-        with open(path, 'wb') as f:  
-            f.write(await response.read())
 
-    print('Вложение ({}) загружено'.format(path))
+NTRY = 5
+
+async def download_to(path, url, session, redo=NTRY):
+    if redo == 0:
+        return
+    try:
+        async with session.get(url) as response:
+            with open(path, 'wb') as f:  
+                f.write(await response.read())
+                sleep(args.wait / 1000)
+    except Exception as e:
+        print('Возникла ошибка при загрузке вложения ({}) (попытка {}) ({})'.format(path, NTRY + 1 -redo, e))
+        sleep(1)
+        await download_to(path, url, session, redo=redo-1)
+    else:
+        s = 'Вложение ({}) загружено'.format(path)
+        if redo != NTRY:
+            s += ' (с {} попытки)'.format(NTRY + 1 - redo)
+        print(s)
 
 async def download_all(tasks):
     async with aiohttp.ClientSession() as session:
