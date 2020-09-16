@@ -116,7 +116,7 @@ if 'indir' in args:
         print('Файл {}'.format(f))
         if f.endswith('.html'):
             os.chdir(args.outdir)
-            download('atts_' + f + '_dir', open(os.path.join('..',args.indir, f)), open(os.path.join(f), 'w'), args.download)
+            download('atts_' + f + '_dir', open(os.path.join('..',args.indir, f), encoding='utf-8'), open(os.path.join(f), 'w', encoding='utf-8'), args.download)
             os.chdir('..')
 else:
     download(args.dir or 'atts_' + args.infile.name + '_dir', args.infile, args.outfile, args.download)
