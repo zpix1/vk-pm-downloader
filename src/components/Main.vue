@@ -22,14 +22,20 @@
             <li>через сайт <a href="https://vkhost.github.io/">vkhost.github.io</a> (выберите "Настройки", а там отметьте пункты "Сообщения" и "Доступ в любое время") </li>
             <li> напрямую по ссылке <a href="https://oauth.vk.com/authorize?client_id=6121396&scope=69632&redirect_uri=https://oauth.vk.com/blank.html&display=page&response_type=token&revoke=1">
             oauth.vk.com</a> </li>
+            </ul><br>
 
-            </ul>  
-            Затем выделите токен из результирующей ссылки (начинается с https://oauth.vk.com/blank.html)
+            Затем вставьте ссылку в данное меню:
 
-            <v-card-actions>
+            <v-form>
+              <v-text-field v-model="tokenHref" label="Ссылка"></v-text-field>
+              <v-text-field v-model="tokenHrefToken" label="Токен" readonly disabled placeholder='Введите ссылку'></v-text-field>
+              <v-btn color="success" :disabled="tokenHrefToken.length == 0" @click="token = tokenHrefToken; tokenDialog = false; tokenUpdated(); init()">Использовать данный токен</v-btn>
+            </v-form>
+
+            <!-- <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="primary" flat @click="tokenDialog = false">Закрыть</v-btn>
-            </v-card-actions>
+            </v-card-actions> -->
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -51,8 +57,8 @@
                         required
                         style="max-width: 300px;padding-bottom:0px; margin-bottom:0px;"
                       ></v-text-field>
-                      <a @click="logpassDialog = true">или вход через логин и пароль</a><br>
-                      <a @click="tokenDialog = true">или получите токен вручную</a>
+                      <a @click="tokenDialog = true">или получите токен вручную (рекомендуется)</a><br>
+                      <a @click="logpassDialog = true">или вход через логин и пароль</a>
                     </div>
                     <v-text-field
                       v-bind:value="(myself && myself.first_name + ' ' + myself.last_name) || ''"
@@ -120,7 +126,7 @@
                     </p>
                     <p>
                       Цена скрипта
-                      <b>300 рублей</b>,
+                      <b>350 рублей</b>,
                       <br />чтобы купить - свяжитесь со мной в Telegram -
                       <a
                         href="https://tglink.ru/zpix1"
@@ -169,7 +175,7 @@ import About from "./About";
 
 export default {
   name: "Main",
-  data: function() {
+  data: function () {
     return {
       tokenDialog: false,
       logpassDialog: false,
@@ -185,10 +191,11 @@ export default {
       chats: [],
       login: "",
       password: "",
-      attachmentsDownloadMenu: false
+      attachmentsDownloadMenu: false,
+      tokenHref: ""
     };
   },
-  created: function() {
+  created: function () {
     if (process.env.NODE_ENV === "development") {
       this.token = localStorage.getItem("pm_token");
       if (this.token) {
@@ -198,7 +205,7 @@ export default {
     }
   },
   methods: {
-    passwordLogin: function() {
+    passwordLogin: function () {
       this.logpassDialog = false;
       this.inittingStage = 1;
       axios
@@ -224,14 +231,14 @@ export default {
           this.init();
         });
     },
-    tokenUpdated: function() {
+    tokenUpdated: function () {
       this.inittingStage = 0;
       this.chats = [];
       this.myself = null;
       this.currentDialogLabel = "";
       API.token = this.token;
     },
-    init: function() {
+    init: function () {
       this.error = false;
       this.inittingStage = 1;
       API.loadVK(
@@ -364,7 +371,7 @@ export default {
         }
       );
     },
-    reportProgress: function(status, current, max) {
+    reportProgress: function (status, current, max) {
       this.currentDialogProgress = Math.ceil((current / max) * 100);
       if (max == 0) {
         this.currentDialogLabel = `${status}`;
@@ -372,10 +379,10 @@ export default {
         this.currentDialogLabel = `${status} ${current}/${max}`;
       }
     },
-    reportDialogProgress: function(status, current, max) {
+    reportDialogProgress: function (status, current, max) {
       this.currentDialogPart = Math.ceil((current / max) * 100);
     },
-    downloadSelected: function() {
+    downloadSelected: function () {
       // try {
       //   if (localStorage.pm_activation_code === "null") {
       //     setTimeout(() => {
@@ -490,12 +497,22 @@ export default {
     }
   },
   computed: {
-    countSelected: function() {
+    countSelected: function () {
       var ans = 0;
       for (var i = 0; i < this.chats.length; i++) {
         if (this.chats[i].selected) ans++;
       }
       return ans;
+    },
+    tokenHrefToken: function () {
+      try {
+        let params = this.tokenHref.replace('https://oauth.vk.com/blank.html#', '')
+                                   .replace('oauth.vk.com/blank.html#', '')
+        let url = new URLSearchParams(params);
+        return url.get('access_token') || '';
+      } catch (e) {
+        return '';
+      }
     }
   },
   components: { ChatList, About }
