@@ -19,8 +19,8 @@
           <v-card-text>
             <!-- <p class="title">Получите токен</p> -->
             <ul>
-            <li>через сайт <a href="https://vkhost.github.io/">vkhost.github.io</a> (выберите "Настройки", а там отметьте пункты "Сообщения" и "Доступ в любое время") </li>
-            <li> напрямую по ссылке <a href="https://oauth.vk.com/authorize?client_id=6121396&scope=69632&redirect_uri=https://oauth.vk.com/blank.html&display=page&response_type=token&revoke=1">
+            <li>через сайт <a target="_blank" href="https://vkhost.github.io/">vkhost.github.io</a> (выберите "Настройки", а там отметьте пункты "Сообщения" и "Доступ в любое время") </li>
+            <li> напрямую по ссылке <a target="_blank" href="https://oauth.vk.com/authorize?client_id=6121396&scope=69632&redirect_uri=https://oauth.vk.com/blank.html&display=page&response_type=token&revoke=1">
             oauth.vk.com</a> </li>
             </ul><br>
 
@@ -126,7 +126,7 @@
                     </p>
                     <p>
                       Цена скрипта
-                      <b>350 рублей</b>,
+                      <b>{{ scriptprice }} рублей</b>,
                       <br />чтобы купить - свяжитесь со мной в Telegram -
                       <a
                         href="https://tglink.ru/zpix1"
@@ -167,7 +167,7 @@ import API from "../libs/api";
 import Analyzes from "../libs/utils";
 import Convertor from "../libs/convertor";
 import { capitalizeFirstLetter } from "../libs/helper";
-import { timeouts } from "../libs/constant";
+import { timeouts, prices } from "../libs/constant";
 import sha512 from "js-sha512";
 
 import ChatList from "./ChatList";
@@ -177,6 +177,7 @@ export default {
   name: "Main",
   data: function () {
     return {
+      scriptprice: prices.script,
       tokenDialog: false,
       logpassDialog: false,
       token: null,

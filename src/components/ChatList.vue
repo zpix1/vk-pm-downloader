@@ -90,9 +90,9 @@
           <p>Сейчас VK PM Downloader может загружать максимум {{ showChatsCount }} чатов, однако вы можете разблокировать его, чтобы загружать до 1000 чатов.</p>
           <p>
             Разблокировка стоит
-            <b>350 рублей</b>, чтобы купить - свяжитесь со мной в Telegram -
+            <b>{{ codeprice }} рублей</b>, чтобы купить - свяжитесь со мной в Telegram -
             <a href="https://tglink.ru/zpix1">@zpix1</a> или по почте
-            <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>
+            <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>.
           </p>
           <p>Перед покупкой не забудьте прочесть информацию о сайте, возврат денег не предусмотрен.</p>
           <v-form>
@@ -114,11 +114,16 @@ import {
   loadRanges
 } from "../libs/helper";
 
+import {
+  prices
+} from "../libs/constant";
+
 export default {
   name: "ChatList",
   props: ["chats"],
   data: function() {
     return {
+      codeprice: prices.code,
       error: null,
       code: "",
       showChatsCount: 10,

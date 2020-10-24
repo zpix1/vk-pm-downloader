@@ -17,4 +17,9 @@ if (localStorage.getItem('pm_slow_mode')) {
     }
 }
 
-export { timeouts };
+let prices = {
+    script: '250',
+    code: '250'
+}
+
+export { timeouts, prices };
