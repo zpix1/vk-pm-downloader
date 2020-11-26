@@ -27,6 +27,16 @@
             </v-list-tile-action>
           </v-list-tile>
 
+          <!-- <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>Выбрать только личные диалоги</v-list-tile-title>
+            </v-list-tile-content>
+
+            <v-list-tile-action @click="chatsUpdated">
+              <v-checkbox color="green" v-model="otherSelected"></v-checkbox>
+            </v-list-tile-action>
+          </v-list-tile> -->
+
           <v-list-tile v-for="c in chats.slice(0, showChatsCount)" :key="c.peer_id" avatar>
             <v-list-tile-avatar>
               <img :src="c.peerInfo.photo_100" />
@@ -38,6 +48,7 @@
 
             <v-chip @click="selectType('group')" v-if="c.type === 'group'">Группа</v-chip>
             <v-chip @click="selectType('chat')"  v-if="c.type === 'chat'">Беседа</v-chip>
+            <v-chip @click="selectType('user')"  v-if="c.type === 'user'">Пользователь</v-chip>
 
             <v-list-tile-action @click="chatsUpdated">
               <v-checkbox v-model="c.selected"></v-checkbox>
@@ -74,6 +85,7 @@
 
               <v-chip @click="selectType('group')" v-if="c.type === 'group'">Группа</v-chip>
               <v-chip @click="selectType('chat')"  v-if="c.type === 'chat'">Беседа</v-chip>
+              <v-chip @click="selectType('user')"  v-if="c.type === 'user'">Пользователь</v-chip>
 
               <v-list-tile-action @click="chatsUpdated">
                 <v-checkbox v-model="c.selected"></v-checkbox>
@@ -248,4 +260,11 @@ export default {
 </script>
 
 <style>
+span.v-chip__content {
+    user-select: none; /* standard syntax */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+}
 </style>

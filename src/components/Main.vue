@@ -168,7 +168,7 @@ import Analyzes from "../libs/utils";
 import Convertor from "../libs/convertor";
 import { capitalizeFirstLetter } from "../libs/helper";
 import { timeouts, prices } from "../libs/constant";
-import sha512 from "js-sha512";
+// import sha512 from "js-sha512";
 
 import ChatList from "./ChatList";
 import About from "./About";
