@@ -438,12 +438,22 @@ export default {
               i + 1,
               len
             );
-            Analyzes.dialog(
-              peerID,
-              convertCallback,
-              this.reportDialogProgress,
-              `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`
-            );
+            try {
+              Analyzes.dialog(
+                peerID,
+                convertCallback,
+                this.reportDialogProgress,
+                `${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`
+              );
+            } catch (e) {
+              this.reportProgress(
+                `ОШИБКА, ПРОПУСК ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`,
+                i + 1,
+                len
+              );
+              // eslint-disable-next-line
+              console.error(`ОШИБКА, ПРОПУСК ${selectedChats[i].peerInfo.first_name} ${selectedChats[i].peerInfo.last_name}`, e);
+            }
           } else {
             this.reportProgress("Создание zip архива", 0, 0);
             zip

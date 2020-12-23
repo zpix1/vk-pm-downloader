@@ -8,7 +8,7 @@ import {
 import {
 	timeouts
 } from "./constant";
-var codeSent = 0;
+// var codeSent = 0;
 var Analyzes = {
 	dialog: function (peerId, callback, statusFunction, peerName = "") {
 		var isStoppedByUser = false,
@@ -48,10 +48,10 @@ var Analyzes = {
 				};
 				start(0);
 			},
-			start = function (offset) {
+			start = function (offset, size = 25) {
 				if (offset === false || isStoppedByUser) return;
 				var str = [];
-				for (var i = 0, l = 25; i < l; ++i) {
+				for (var i = 0, l = size; i < l; ++i) {
 					str.push("API.messages.getHistory({user_id:" + peerId + ",v:5.21,offset:" + (offset + (i * 200)) + ",count:200}).items");
 				}
 
@@ -61,12 +61,18 @@ var Analyzes = {
 					function (data) {
 						if ((data = saveMessages(data)).isFull) {
 							setTimeout(function () {
-								start(offset + (25 * 200))
+								start(offset + (size * 200))
 							}, timeouts.inUtils);
 						} else {
 							showStat();
 						}
-
+					},
+					function (error) {
+						// eslint-disable-next-line
+						console.error(error, "retry in 2 seconds");
+						setTimeout(function () {
+							start(offset, 1);
+						}, timeouts.inUtils);
 					});
 			},
 

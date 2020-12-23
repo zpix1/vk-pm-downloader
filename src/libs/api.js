@@ -16,6 +16,8 @@ API.loadVK = function (method, data, callback, errorCallback = console.error) {
         if (data.error) {
             // eslint-disable-next-line
             console.error('load', url, data.error);
+            errorCallback(data.error);
+            return;
         }
         if (error) {
             errorCallback(error);

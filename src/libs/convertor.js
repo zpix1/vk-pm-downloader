@@ -250,9 +250,9 @@ async function json2html(object, my_id, callback) {
     html.getElementsByTagName("body")[0].appendChild(galleryScript);
     var outerDiv = document.createElement('div');
     outerDiv.appendChild(html);
-
+    // console.log(outerDiv.innerHTML);
     callback({
-        data: outerDiv.innerHTML,
+        data: outerDiv.innerHTML.replaceAll('data-lasy_src', 'src'),
         filename: object.filename.replace('.json', '.html')
     });
 }
@@ -267,7 +267,7 @@ async function message2tag(message, sender) {
     var avatarDiv = document.createElement("div");
     avatarDiv.className = "upic";
     var avatarImg = document.createElement("img");
-    avatarImg.src = sender.photo_100;
+    avatarImg.dataset.lasy_src = sender.photo_100;
     avatarDiv.appendChild(avatarImg);
     div.appendChild(avatarDiv);
 
@@ -361,7 +361,7 @@ function generateAttachment(attachment) {
         imgA.className = 'download_photo_type';
         imgA.dataset.src = maxRes(attachment[attachment.type])[0];
         let img = document.createElement('img');
-        img.src = maxRes(attachment[attachment.type])[1];
+        img.dataset.lasy_src = maxRes(attachment[attachment.type])[1];
         img.className = 'att_photo';
         imgA.appendChild(img);
         gDiv.appendChild(imgA);
@@ -378,7 +378,7 @@ function generateAttachment(attachment) {
         imgA.href = maxRes(attachment[attachment.type])[0];
 
         let img = document.createElement('img');
-        img.src = maxRes(attachment[attachment.type])[1];
+        img.dataset.lasy_src = maxRes(attachment[attachment.type])[1];
 
         imgA.appendChild(img);
         gDiv.appendChild(imgA);
@@ -393,7 +393,7 @@ function generateAttachment(attachment) {
         let br = document.createElement('br');
 
         let audio = document.createElement('audio');
-        audio.src = attachment[attachment.type].url;
+        audio.dataset.lasy_src = attachment[attachment.type].url;
         audio.dataset.src = attachment[attachment.type].url;
         if (attachment[attachment.type].url) {
             audio.className = 'download_audio_message_type';
