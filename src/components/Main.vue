@@ -256,7 +256,11 @@ export default {
           API.myself = d[0];
         },
         e => {
-          this.error = `Ошибка сети (${e.error_msg})`;
+          if (e.error_code === 5) {
+            this.error = "Токен не валиден или недостаточно прав.";
+          } else {
+            this.error = `Ошибка сети (${e.error_msg})`;
+          }
           this.tokenUpdated();
         }
       );
