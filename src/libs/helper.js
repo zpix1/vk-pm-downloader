@@ -86,16 +86,22 @@ function isPrime(num) {
     return true;
 }
 
-function checkActivationCode(code) {
+// window.checkActivationCode = checkActivationCode;
+
+function checkActivationCode(code, userid) {
 
     if (!code) {
-        return false;
+        return { res: false, expl: 'no code found' };
     }
     
+    // if (code.includes('pers')) {
+
+    // }
+
     if (OptEncodes.has(sha512(code + salt))) {
-        return true;
+        return { res: true, expl: 'ok!' };
     } else {
-        return false;
+        return { res: false, expl: 'code not valid' };
     }
 
     // b, d, c, a 

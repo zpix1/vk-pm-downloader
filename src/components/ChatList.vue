@@ -132,7 +132,7 @@ import {
 
 export default {
   name: "ChatList",
-  props: ["chats"],
+  props: ["chats", "userid"],
   data: function() {
     return {
       codeprice: prices.code,
@@ -156,16 +156,14 @@ export default {
   methods: {
     declOfNum: declOfNum,
     checkCode: function() {
-      if (checkActivationCode(this.code)) {
+      let ck = checkActivationCode(this.code, userid);
+      if (ck.res) {
         this.selectLast = true;
         localStorage.setItem("pm_activation_code", this.code);
         this.error = null;
         this.unlockDialog = false;
-
-        
-
       } else {
-        this.error = "Введенный код не валиден";
+        this.error = "Введенный код не валиден (" + ck.expl + ")";
       }
     },
     chatsUpdated: function() {

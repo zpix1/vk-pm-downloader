@@ -89,7 +89,7 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex md8 xs12>
-          <ChatList v-bind:chats="chats" />
+          <ChatList v-bind:chats="chats" v-bind:userid="myself ? myself.id : 0" />
         </v-flex>
         <v-flex md4 xs12>
           <v-card>
