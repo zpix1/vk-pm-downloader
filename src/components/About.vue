@@ -16,9 +16,9 @@
             <b>v1.5.4</b> Исправлены ошибки связанные с обновлением версий VK API <br>
             <b>v1.5.5</b> Добавлена возможность выбора только пользователей (исключая группы и беседы) <br>
             <b>v1.6.0</b> Оптимизации, скорость закачки значительно выросла <br>
+            <b>v1.7.0</b> Сайт становится полностью бесплатным, исходный код открыт 
+        <a href="https://github.com/zpix1/vk-pm-downloader">Github</a><br>
           </p>
-          <!-- <p class="title">Возможные проблемы</p>
-          <p>Проблемы сети - скорее вс</p> -->
           <p class="title">Общая информация</p>
           <p>JSON - идентично apidog'овскому формату, можно засунуть в их анализатор<br>
              HTML - отображение диалога как в ВК (только некоторые типы вложений не отбражаются)<br>
@@ -60,10 +60,11 @@
           <p>
             <a @click="moreInformationModel = true">Больше информации</a>
           </p>
-        </div>Сделал
-        <a href="https://zpix1.github.io" target="_blank">@zpix</a> в 2019
+        </div>
+        <a href="https://github.com/zpix1/vk-pm-downloader">Github</a>
         <br>
-        <a href="mailto:zpix-dev@list.ru" target="_blank">zpix-dev@list.ru</a>
+        Сделал
+        <a href="https://zpix1.github.io" target="_blank">@zpix</a> в 2019
       </v-card-text>
     </v-card>
   </div>

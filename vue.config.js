@@ -12,6 +12,6 @@ module.exports = {
         })
   },
   configureWebpack: {
-    plugins: (process.env.NODE_ENV == 'production' ? [ new JavaScriptObfuscator() ] : [])
+    // plugins: (process.env.NODE_ENV == 'production' ? [ new JavaScriptObfuscator() ] : [])
   }
 }

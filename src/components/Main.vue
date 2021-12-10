@@ -122,16 +122,9 @@
                       <br />Скрипт качает
                       <b>только фото и аудио сообщения</b>.
                       <br />Скрипт консольный, т.е. управляется через интерфейс командной строки.
-                      <br />Инструкция по использованию скрипта выдается при покупке.
                     </p>
                     <p>
-                      Цена скрипта
-                      <b>{{ scriptprice }} рублей</b>,
-                      <br />чтобы купить - свяжитесь со мной в Telegram -
-                      <a
-                        href="https://tglink.ru/zpix1"
-                      >@zpix1</a> или по почте
-                      <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>
+                      Скрипт доступен по <a href="https://gist.github.com/zpix1/5bedb8911203047adf2be475e7dff625">ссылке</a>.
                     </p>
                   </v-card-text>
                   <v-card-actions>

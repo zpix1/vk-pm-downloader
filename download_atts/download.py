@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import argparse
+import sys
 import os
 import asyncio
 import random
@@ -8,11 +9,12 @@ from time import sleep
 from bs4 import BeautifulSoup 
 import requests
 import aiohttp
+from urllib.parse import urlparse
 
 parser = argparse.ArgumentParser(description='Скачать все вложения из файлов VK PM Downloader')
 parser.add_argument('--wait', type=int, help='Задержка между отдельными запросами (в мс)', default=0)
-sp = parser.add_subparsers()
-
+sp = parser.add_subparsers(dest='mode')
+sp.required = True
 file_p = sp.add_parser('file', help='Скачать у одного файла')
 file_p.add_argument('infile', action='store', type=argparse.FileType('r'), help='Входной HTML файл (скачанный с помощью VK PM Downloader v>=1.3)')
 file_p.add_argument('outfile', action='store', type=argparse.FileType('w'), help='Выходной файл с измененными ссылками')
@@ -23,11 +25,17 @@ dir_p = sp.add_parser('dir', help='Скачать для всей папки')
 dir_p.add_argument('indir', help='Папка с диалогами')
 dir_p.add_argument('outdir', help='Папка для вывода')
 dir_p.add_argument('--download', choices=['photo', 'audio', 'all'], default='all', help='Выбор видов вложений для загрузки, по умолчанию качается все')
-
+# print(sys.argv)
 args = parser.parse_args()
-
-
+# print(args)
 NTRY = 5
+
+def random_salt():
+    return str(random.randint(10e5, 10e6))
+
+def normalize_filename(filename):
+    return random_salt() + '_' + urlparse(filename).path
+    
 
 async def download_to(path, url, session, redo=NTRY):
     if redo == 0:
@@ -81,7 +89,7 @@ def download(directory, infile, outfile, download):
 
         url = e['data-src']
 
-        new_name = '{}'.format('_'.join(url.split('/')[-4:]))
+        new_name = normalize_filename('{}'.format('_'.join(url.split('/')[-4:])))
         new_path = os.path.join(directory, new_name)
         if not os.path.exists(new_path) and not (new_path, url) in tasks:
             print('Загрузка вложения id={}'.format(e_i))
@@ -119,4 +127,4 @@ if 'indir' in args:
             download('atts_' + f + '_dir', open(os.path.join('..',args.indir, f), encoding='utf-8'), open(os.path.join(f), 'w', encoding='utf-8'), args.download)
             os.chdir('..')
 else:
-    download(args.dir or 'atts_' + args.infile.name + '_dir', args.infile, args.outfile, args.download)
+    download('atts_' + args.infile.name + '_dir', args.infile, args.outfile, args.download)

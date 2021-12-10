@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">VK PM Downloader v{{ v }}</div> 
+      <div class="header">VK PM Downloader v{{ v }} FREE</div> 
       <Main/>
     </main>
   </v-app>
