@@ -95,26 +95,6 @@
         </v-list>
       </v-card>
     </v-flex>
-    <v-dialog v-model="unlockDialog" width="700">
-      <v-card>
-        <v-card-title class="headline" primary-title>Разблокировка</v-card-title>
-        <v-card-text>
-          <p>Сейчас VK PM Downloader может загружать максимум {{ showChatsCount }} чатов, однако вы можете разблокировать его, чтобы загружать до 1000 чатов.</p>
-          <p>
-            Разблокировка стоит
-            <b>{{ codeprice }} рублей</b>, чтобы купить - свяжитесь со мной в Telegram -
-            <a href="https://tglink.ru/zpix1">@zpix1</a> или по почте
-            <a href="mailto:zpix-dev@list.ru">zpix-dev@list.ru</a>.
-          </p>
-          <p>Перед покупкой не забудьте прочесть информацию о сайте, возврат денег не предусмотрен.</p>
-          <v-form>
-            <v-text-field v-model="code" mask="nnnn-nnnn-nnnn-nnnn" label="Код активации"></v-text-field>
-            <v-btn color="success" @click="checkCode">активировать</v-btn>
-          </v-form>
-          <v-alert :value="error" type="error">{{ error }}</v-alert>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-layout>
 </template>
 
@@ -126,22 +106,16 @@ import {
   loadRanges
 } from "../libs/helper";
 
-import {
-  prices
-} from "../libs/constant";
-
 export default {
   name: "ChatList",
   props: ["chats", "userid"],
   data: function() {
     return {
-      codeprice: prices.code,
       error: null,
       code: "",
       showChatsCount: 10,
       showAll: false,
       selectLast: false,
-      unlockDialog: false,
       chatRangeText: null,
       chatRangeTextRules: [
         v => !!v || "введите диапазон",
@@ -155,17 +129,6 @@ export default {
   },
   methods: {
     declOfNum: declOfNum,
-    checkCode: function() {
-      let ck = checkActivationCode(this.code, userid);
-      if (ck.res) {
-        this.selectLast = true;
-        localStorage.setItem("pm_activation_code", this.code);
-        this.error = null;
-        this.unlockDialog = false;
-      } else {
-        this.error = "Введенный код не валиден (" + ck.expl + ")";
-      }
-    },
     chatsUpdated: function() {
       var selected = [];
       for (var i = 0; i < this.chats.length; i++) {

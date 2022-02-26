@@ -4,10 +4,10 @@ var API = {
     token: null
 }
 const version = '5.81';
-var CORS = '';
-if (process.env.NODE_ENV === 'development') {
-     CORS = 'https://cors-anywhere.herokuapp.com/'
-}
+// var CORS = '';
+// if (process.env.NODE_ENV === 'development') {
+//      CORS = 'https://cors-anywhere.herokuapp.com/'
+// }
 // eslint-disable-next-line
 API.loadVK = function (method, data, callback, errorCallback = console.error) {
     let url = `https://api.vk.com/method/${method}?access_token=${this.token}&v=${version}&https=1&${Object.keys(data).reduce(function(a,k){a.push(k+'='+encodeURIComponent(data[k]));return a},[]).join('&')}`;

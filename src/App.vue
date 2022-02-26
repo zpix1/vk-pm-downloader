@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">VK PM Downloader  v{{ v }} <span class="free-label">FREE</span></div> 
+      <div class="header">VK PM Downloader  v{{ v }} <span class="free-label">Now free and open source</span></div> 
       <Main/>
     </main>
   </v-app>
@@ -32,6 +32,7 @@ export default {
 
 .free-label {
   font-size: 15px;
-  vertical-align: sub;
+  text-decoration: underline;
+  vertical-align: top;
 }
 </style>
