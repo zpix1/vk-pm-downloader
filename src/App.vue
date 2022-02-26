@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <main>
-      <div class="header">VK PM Downloader v{{ v }} FREE</div> 
+      <div class="header">VK PM Downloader  v{{ v }} <span class="free-label">FREE</span></div> 
       <Main/>
     </main>
   </v-app>
@@ -28,5 +28,10 @@ export default {
   margin-top: 10px;
   text-align: center;
   font-size: 30px;
+}
+
+.free-label {
+  font-size: 15px;
+  vertical-align: sub;
 }
 </style>
