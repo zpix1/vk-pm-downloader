@@ -1,9 +1,11 @@
 import jsonp from 'jsonp';
 import jsonpPromise from 'jsonp-promise';
-var API = {
-    token: null
-}
+
 const version = '5.81';
+var API = {
+    token: null,
+    version: version
+}
 // var CORS = '';
 // if (process.env.NODE_ENV === 'development') {
 //      CORS = 'https://cors-anywhere.herokuapp.com/'

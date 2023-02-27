@@ -19,9 +19,9 @@ var Analyzes = {
 				setStatus("Инициализация", 0, 1);
 				let code = '';
 				if (peerId < 0) {
-					code = "var o=%o;return{u:API.groups.getById({group_ids:o,fields:\"photo_100\",v:5.21})[0],m:API.messages.getHistory({user_id:-o,v:5.21}).count};";
+					code = "var o=%o;return{u:API.groups.getById({group_ids:o,fields:\"photo_100\",v:5.81})[0],m:API.messages.getHistory({user_id:-o,v:5.81}).count};";
 				} else {
-					code = "var o=%o;return{u:API.users.get({user_ids:o,fields:\"photo_100,online,first_name_ins,last_name_ins\",v:5.21})[0],m:API.messages.getHistory({user_id:o,v:5.21}).count};";
+					code = "var o=%o;return{u:API.users.get({user_ids:o,fields:\"photo_100,online,first_name_ins,last_name_ins\",v:5.81})[0],m:API.messages.getHistory({user_id:o,v:5.81}).count};";
 				}
 				API.loadVK("execute", {
 					code: (
@@ -52,7 +52,7 @@ var Analyzes = {
 				if (offset === false || isStoppedByUser) return;
 				var str = [];
 				for (var i = 0, l = size; i < l; ++i) {
-					str.push("API.messages.getHistory({user_id:" + peerId + ",v:5.21,offset:" + (offset + (i * 200)) + ",count:200}).items");
+					str.push("API.messages.getHistory({user_id:" + peerId + ",v:5.81,offset:" + (offset + (i * 200)) + ",count:200}).items");
 				}
 
 				API.loadVK("execute", {
@@ -123,7 +123,7 @@ var Analyzes = {
 					var o = {
 						i: m.id,
 						f: m.from_id,
-						t: m.body,
+						t: m.text,
 						d: m.date - d2006
 					};
 					if (m.attachments)
@@ -141,11 +141,11 @@ var Analyzes = {
 								return {
 									t: 0,
 										s: {
-											m: o.photo_2560,
-											s: o.photo_1280,
-											n: o.photo_807,
-											o: o.photo_604,
-											t: o.photo_130
+											m: o.sizes[Math.floor(o.sizes.length * 1) - 1].url,
+											s: o.sizes[Math.floor(o.sizes.length * 0.7)].url,
+											n: o.sizes[Math.floor(o.sizes.length * 0.5)].url,
+											o: o.sizes[Math.floor(o.sizes.length * 0.4)].url,
+											t: o.sizes[Math.floor(o.sizes.length * 0.2)].url
 										},
 										z: o.description || "",
 										q: o.lat || 0,
