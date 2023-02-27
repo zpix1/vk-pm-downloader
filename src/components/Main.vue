@@ -262,7 +262,7 @@ export default {
       for (var i = 0; i < 25; i++) {
         str.push(
           `API.messages.getConversations({offset: ${i *
-            40}, count:40, extended: 1, v:5.21})`
+            40}, count:40, extended: 1, v:5.81})`
         );
       }
 
