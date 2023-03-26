@@ -220,8 +220,8 @@ var Analyzes = {
 				minifyForwardedMessages: function (a) {
 					return a.map(function (i) {
 						var o = {
-							f: i.user_id,
-							t: i.body,
+							f: i.from_id,
+							t: i.text,
 							d: i.date - d2006
 						};
 						if (i.attachments)

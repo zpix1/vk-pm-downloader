@@ -208,7 +208,7 @@ async function json2html(object, my_id, callback) {
     div.className = "messages round_upic main_wrapper";
 
     var h1 = document.createElement("h1");
-    h1.innerText = `PM Downloader v${process.env.VERSION}`;
+    h1.innerHTML = `<a href="https://zpix1.github.io/vk-pm-downloader/" target="_blank">VK PM Downloader v${process.env.VERSION}</a>`;
     div.appendChild(h1);
     for (let i = 0; i < newData.length; i++) {
         if (newData[i].out)
@@ -223,7 +223,7 @@ async function json2html(object, my_id, callback) {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            <title>PM Downloader v${process.env.VERSION} ${object.filename.replace('.json', '.html')}</title>
+            <title>VK PM Downloader v${process.env.VERSION} ${object.filename.replace('.json', '.html')}</title>
             <style>
             h4{font-family:inherit;font-weight:500;line-height:1.1;color:inherit;margin-top:10px;margin-bottom:10px;font-size:18px}
             body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#fff;margin:0}
@@ -236,7 +236,7 @@ async function json2html(object, my_id, callback) {
             .att_doc{background-position:0 -280px}.att_wall,.att_fwd{background-position:0 -194px}.att_gift{background-position:0 -105px}
             .att_sticker{background-position:0 -362px;width:12px;height:12px}.att_link{background-position:0 -237px}.attb_link a span{color:#777!important}
             .att_geo{background-position:0 -165px}.fwd{border:2px solid #C3D1E0;border-width:0 0 0 2px;margin-left:85px}.attachments{margin:5px;float:left}
-            .attachment_title{font-size:20px;}.hidden_ta_at{display:none}.main_wrapper{margin:auto;max-width:1000px}
+            .attachment_title{font-size:20px;}.hidden_ta_at{display:none}.main_wrapper{margin:auto;max-width:1000px}.visible_ta_at{margin-left:60px;min-height:1px;min-width:200px;}
             </style>
             <style>${galleryCSS}</style>
             </head>
@@ -250,7 +250,6 @@ async function json2html(object, my_id, callback) {
     html.getElementsByTagName("body")[0].appendChild(galleryScript);
     var outerDiv = document.createElement('div');
     outerDiv.appendChild(html);
-    // console.log(outerDiv.innerHTML);
     callback({
         data: outerDiv.innerHTML.replaceAll('data-lasy_src', 'src'),
         filename: object.filename.replace('.json', '.html')
@@ -416,7 +415,7 @@ function generateAttachment(attachment) {
 
         div.appendChild(gDiv);
     } else {
-        ta.className = '';
+        ta.className = 'visible_ta_at';
     }
     return div;
 }

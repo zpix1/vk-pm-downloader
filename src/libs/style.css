@@ -157,6 +157,12 @@ a:hover {
     display: none;
 }
 
+.visible_ta_at {
+    margin-left: 60px;
+    min-height: 1px;
+    min-width: 200px;
+}
+
 .main_wrapper {
     margin: auto;
     max-width: 1000px;
